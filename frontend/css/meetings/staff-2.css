@@ -1,0 +1,258 @@
+:root { 
+    --green: #31A74F;
+    --dark-blue: #011627;
+    --light-gray: #f4f4f4;
+    --dark-gray: #727272;
+    --gray: #D9D9D9;
+    --white-gray: #DBDBDB;
+    --white: #ffffff;
+    --red: #E54335;
+    --yellow: #E59c24;
+    --gray-line: #d3d3d3;
+}
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-gray);
+    margin: 0;
+    padding-top: 80px; /* Adjust for fixed navbar */
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--dark-blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 30px;
+    z-index: 1000;
+}
+
+/* Logo */
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: var(--green);
+}
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links li {
+    display: inline;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--green);
+}
+
+/* Register Button */
+.register-btn {
+    background-color: var(--green);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Profile Icon */
+.profile-circle {
+    width: 35px;
+    height: 35px;
+    background-color: var(--yellow);
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+/* Back Button */
+.back-btn {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--dark-blue);
+}
+
+.back-btn:hover {
+    color: var(--green);
+}
+
+/* Event Card */
+.event-card {
+    max-width: 700px;
+    margin: 60px auto;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.event-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.event-title {
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.event-details {
+    padding: 20px;
+}
+
+.event-details h3 {
+    font-size: 20px;
+    color: var(--dark-blue);
+    margin-bottom: 10px;
+}
+
+.event-details p {
+    font-size: 14px;
+    color: var(--dark-gray);
+    line-height: 1.5;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--dark-blue);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+      
+ .footer-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.footer-left .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+.footer-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    text-align: center;
+    align-items: flex-end;
+}
+
+.footer-center a {
+    color: white;
+    text-decoration: none;
+    padding: 0 10px;
+}
+
+.footer-center a:hover {
+    text-decoration: underline;
+}
+
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+footer p {
+    position: absolute;
+    bottom: 6px;
+    left: 0px;
+    font-size: 14px;
+}
+
+footer .footer-center {
+    position:fixed;
+    bottom: 0px;
+    right: 0px;
+    font-size: 14px;
+}     
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.social-icons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--green);
+    color: white;
+    border-radius: 50%;
+    font-size: 20px;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    background-color: var(--dark-blue);
+}
+
+.back-btn {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--dark-blue);
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    color: var(--green);
+}
