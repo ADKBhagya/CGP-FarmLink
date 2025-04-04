@@ -35,10 +35,8 @@ app.get("/api/farmer/details", (req, res) => {
 
     res.status(200).json(results); // Send farmer data as JSON response
   });
-});
 
-//Profiles
-
+  //Profiles
 
 const bodyParser = require("body-parser");
 const mysql = require("mysql"); 
@@ -70,3 +68,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(` Server running on port ${PORT}`);
 });
+
+});
+
+

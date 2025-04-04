@@ -56,3 +56,6 @@ fetch('http://localhost:3000/api/farmers')
   .then(response => response.json())
   .then(data => console.log('Farmers:', data))
   .catch(error => console.error('Error fetching farmers:', error));
+
+
+  
