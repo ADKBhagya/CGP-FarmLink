@@ -1,3 +1,5 @@
+//Staff
+
 async function registerFarmer() {
     const farmerData = {
         FirstName: document.getElementById("FirstName").value,
@@ -37,3 +39,20 @@ async function registerFarmer() {
 }
 
 loadFarmers();
+
+//Profiles
+
+
+document.getElementById('getDataBtn').addEventListener('click', function() {
+    fetch('http://localhost:3000/api/example')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('message').textContent = data.message;
+        })
+        .catch(error => console.error('Error:', error));
+});
+
+fetch('http://localhost:3000/api/farmers')
+  .then(response => response.json())
+  .then(data => console.log('Farmers:', data))
+  .catch(error => console.error('Error fetching farmers:', error));

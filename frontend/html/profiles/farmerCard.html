@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Cards UI</title>
+    <link rel="stylesheet" href="/CGP-FarmLink/frontend/css/profiles/profiles.css">
+
+</head>    
+<body>
+<div class="card">
+    <div class="cover"></div>
+    <div class="user">👤</div>
+    <button class="edit-btn">Edit</button>
+    <p class="user-role">Farmer</p>
+    <h3>Ramesh hhghsh</h3>
+   
+    
+    <form action="/logout" method="POST">
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="info@example.com">
+        </div>
+        <div class="input-group">
+            <label for="contact">Contact No</label>
+            <input type="text" id="contact" name="contact" required placeholder="07X XXX XXX">
+        </div>
+        <div class="input-group">
+            <label for="nic">NIC</label>
+            <input type="text" id="nic" name="nic" required placeholder="XXX XXX XXX">
+        </div>
+        <div class="input-group">
+            <label for="account">Account No</label>
+            <input type="text" id="account" name="account" required placeholder="XXX XXX XXX">
+        </div>
+        
+        <div class="buttons">
+            <button type="submit" class="btn logout">Logout</button>
+            <button type="submit" class="btn save">Save</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+
+

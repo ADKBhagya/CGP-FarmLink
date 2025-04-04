@@ -1,3 +1,5 @@
+//Staff
+
 const express = require("express");
 const cors = require("cors");
 const staffRoutes = require("./backend/routes/staff");
@@ -33,4 +35,38 @@ app.get("/api/farmer/details", (req, res) => {
 
     res.status(200).json(results); // Send farmer data as JSON response
   });
+});
+
+//Profiles
+
+
+const bodyParser = require("body-parser");
+const mysql = require("mysql"); 
+const cors = require('cors');
+app.use(cors()); 
+
+
+const userRoutes = require("./routes/userRoutes.js");
+
+require("dotenv").config();
+
+
+require('dotenv').config();
+
+const app = express();
+app.use(bodyParser.json());
+
+app.use('/api', userRoutes);
+
+//  Test Database Connection with API Route
+app.get('/api/farmers', (req, res) => {
+    db.query('SELECT * FROM farmers', (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+        res.json(results);
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(` Server running on port ${PORT}`);
 });

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Cards UI</title>
+    <link rel="stylesheet" href="/CGP-FarmLink/frontend/css/profiles/profiles.css">
+
+</head>    
+<body>
+    
+     <div class="card">
+        <div class="cover"></div>
+        <div class="user">👤</div>
+        <button class="edit-btn">Edit</button>
+        <p class="user-role">Buyer</p>
+        <h3>Ramesh hhghsh</h3>
+        
+        <form action="/save" method="POST">
+            <div class="input-group">
+                <label for="buyer">Buyer</label>
+                <input type="text" id="buyer" name="buyer" required placeholder="001">
+            </div>
+            <div class="input-group">
+                <label for="address">Address</label>
+                <input type="text" id="address" name="address" required placeholder="No/2XX, XXXXXXX">
+            </div>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="info@example.com">
+            </div>
+            <div class="input-group">
+                <label for="contact">Contact No</label>
+                <input type="text" id="contact" name="contact" required placeholder="07X XXX XXX">
+            </div>
+            <div class="input-group">
+                <label for="nic">NIC</label>
+                <input type="text" id="nic" name="nic" required placeholder="XXX XXX XXX">
+            </div>
+            <div class="input-group">
+                <label for="username">User Name</label>
+                <input type="text" id="username" name="username" required placeholder="XXX XXX XXX">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="XXX XXX XXX">
+            </div>
+    
+            <div class="buttons">
+                <button type="submit" class="btn logout">Logout</button>
+                <button type="submit" class="btn save">Save</button>
+            </div>
+        </form>
+    </div>
+    
+
+</body>
+</html>
