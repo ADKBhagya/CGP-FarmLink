@@ -22,6 +22,11 @@
     </nav>
     <div class="container">
         <h1>View Buyers</h1>
+        <div style="display: flex; justify-content: center; margin: 20px 0;">
+            <input type="text" id="buyerSearchInput" placeholder="Enter Buyer ID" style="padding: 8px; width: 250px; border: 1px solid #ddd; border-radius: 4px;">
+            <button onclick="searchBuyer()" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Search</button>
+            <button onclick="resetBuyerSearch()" style="padding: 8px 15px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Reset</button>
+          </div>
         <button id="downloadPDF" class="pdf-btn">PDF ↓</button>
 
         <div class="table-container">
@@ -64,6 +69,38 @@
         </div>
     </div>
     <div id="footer-container"></div>
+    
+    <script>
+        function searchBuyer() {
+          const searchValue = document.getElementById('buyerSearchInput').value.trim();
+          const tableRows = document.querySelectorAll('table tbody tr');
+          
+          tableRows.forEach(row => {
+            const idCell = row.cells[0].textContent.trim();
+            if (searchValue === '' || idCell.includes(searchValue)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        }
+        
+        function resetBuyerSearch() {
+          document.getElementById('buyerSearchInput').value = '';
+          const tableRows = document.querySelectorAll('table tbody tr');
+          tableRows.forEach(row => {
+            row.style.display = '';
+          });
+        }
+        
+        // Allow search on Enter key press
+        document.getElementById('buyerSearchInput').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            searchBuyer();
+          }
+        });
+        </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Variables

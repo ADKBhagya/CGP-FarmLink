@@ -26,6 +26,11 @@
 
         <div class="content">
             <h1>View Staff</h1>
+            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                <input type="text" id="staffSearchInput" placeholder="Enter Staff ID" style="padding: 8px; width: 250px; border: 1px solid #ddd; border-radius: 4px;">
+                <button onclick="searchStaff()" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Search</button>
+                <button onclick="resetStaffSearch()" style="padding: 8px 15px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Reset</button>
+              </div>
             <button id="downloadPDF" class="pdf-btn">PDF ⬇</button>
 
             <table id="staffTable">
@@ -69,6 +74,38 @@
         </div>
     </div>
     <div id="navbar-container"></div>
+
+    <script>
+        function searchStaff() {
+          const searchValue = document.getElementById('staffSearchInput').value.trim();
+          const tableRows = document.querySelectorAll('table tbody tr');
+          
+          tableRows.forEach(row => {
+            const idCell = row.cells[0].textContent.trim();
+            if (searchValue === '' || idCell.includes(searchValue)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        }
+        
+        function resetStaffSearch() {
+          document.getElementById('staffSearchInput').value = '';
+          const tableRows = document.querySelectorAll('table tbody tr');
+          tableRows.forEach(row => {
+            row.style.display = '';
+          });
+        }
+        
+        // Allow search on Enter key press
+        document.getElementById('staffSearchInput').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            searchStaff();
+          }
+        });
+        </script>
+        
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             loadStaffData();
