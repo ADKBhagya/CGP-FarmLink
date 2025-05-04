@@ -7,54 +7,48 @@ const path = require('path');
 const fs = require('fs');
 const db = require("../CGP-FarmLink/backend/db");
 
-// Initialize Express app
-const port1 = 3000;
-const port2 = 4000;
-const port3 = 5000;
-const port4 = 5500;
-const app1 = express();
-const app2 = express();
-const app3 = express();
-const app4 = express();
-app1.use(cors());
-app1.use(bodyParser.urlencoded({ extended: true }));
-app1.use(bodyParser.json());
+// Initialize a SINGLE Express app
+const app = express();
+const PORT = process.env.PORT || 4000;
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app2.use(cors());
-app2.use(bodyParser.urlencoded({ extended: true }));
-app2.use(bodyParser.json());
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app3.use(cors());
-app3.use(bodyParser.urlencoded({ extended: true }));
-app3.use(bodyParser.json());
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app4.use(cors());
-app4.use(bodyParser.urlencoded({ extended: true }));
-app4.use(bodyParser.json());
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Existing Routes
 const staffRoutes = require("../CGP-FarmLink/backend/routes/staff");
 
 // Middleware
-app1.use(bodyParser.urlencoded({ extended: true }));
-app1.use(bodyParser.json());
-app1.use(express.static('public'));
-app1.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
-app2.use(bodyParser.urlencoded({ extended: true }));
-app2.use(bodyParser.json());
-app2.use(express.static('public'));
-app2.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
-app3.use(bodyParser.urlencoded({ extended: true }));
-app3.use(bodyParser.json());
-app3.use(express.static('public'));
-app3.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
-app4.use(bodyParser.urlencoded({ extended: true }));
-app4.use(bodyParser.json());
-app4.use(express.static('public'));
-app4.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
 // New Shop Routes
 const rentItemsRoutes = require("../CGP-FarmLink/backend/routes/rentItems");
@@ -65,12 +59,12 @@ const dashboardRoutes = require("../CGP-FarmLink/backend/routes/dashboard");
 
 
 // API Routes
-app3.use("/api/staff", staffRoutes);
-app3.use("/api/rent-items", rentItemsRoutes);
-app3.use("/api/fertilizers", fertilizersRoutes);
+app.use("/api/staff", staffRoutes);
+app.use("/api/rent-items", rentItemsRoutes);
+app.use("/api/fertilizers", fertilizersRoutes);
 
 // Farmer details route
-app3.get("/api/farmer/details", (req, res) => {
+app.get("/api/farmer/details", (req, res) => {
     const query = "SELECT * FROM farmer";
 
     db.query(query, (err, results) => {
@@ -84,7 +78,7 @@ app3.get("/api/farmer/details", (req, res) => {
 });
 
 // Harvest details route
-app3.get("/api/harvest/getHarvest", (req, res) => {
+app.get("/api/harvest/getHarvest", (req, res) => {
     const query = "SELECT * FROM Harvest";
 
     db.query(query, (err, results) => {
@@ -98,7 +92,7 @@ app3.get("/api/harvest/getHarvest", (req, res) => {
 });
 
 // Root Route
-app3.get("/", (req, res) => {
+app.get("/", (req, res) => {
     res.send("FarmLink Backend is Running! 🚀");
 });
 
@@ -136,8 +130,8 @@ db.connect(err => {
 });
 
 // Main page route
-app1.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/services.html'));
+app.get('/', (req, res) => {
+ res.sendFile(path.join(__dirname, 'public/services.html'));
 });
 
 // -------------------------------
@@ -145,22 +139,22 @@ app1.get('/', (req, res) => {
 // -------------------------------
 
 // Route to serve the rent items page
-app1.get('/rent-items', (req, res) => {
+app.get('/rent-items', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/rent.html'));
 });
 
 // Route to serve the rent item details page
-app1.get('/product-details.html', (req, res) => {
+app.get('/product-details.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/rent-productdetails.html'));
 });
 
 // Route to serve the fertilizer item details page
-app1.get('/product-details.html', (req, res) => {
+app.get('/product-details.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/fertilizer-productdetails.html'));
 });
 
 // Route to get rent cards with additional filtering
-app1.get('/getRentCardsByCategory', (req, res) => {
+app.get('/getRentCardsByCategory', (req, res) => {
     const category = req.query.category || 'all';
 
     let query = 'SELECT * FROM rent_cards';
@@ -195,7 +189,7 @@ app1.get('/getRentCardsByCategory', (req, res) => {
 });
 
 // Route to search rent cards by name or description
-app1.get('/searchRentCards', (req, res) => {
+app.get('/searchRentCards', (req, res) => {
     const searchTerm = req.query.term || '';
 
     if (!searchTerm.trim()) {
@@ -247,7 +241,7 @@ app1.get('/searchRentCards', (req, res) => {
 });
 
 // Route to add a new rent card
-app1.post('/addRentCard', upload.single('image'), (req, res) => {
+app.post('/addRentCard', upload.single('image'), (req, res) => {
     console.log('Form data received:', req.body);
     console.log('File received:', req.file);
 
@@ -302,7 +296,7 @@ app1.post('/addRentCard', upload.single('image'), (req, res) => {
 });
 
 // Route to get a single rent card by ID
-app1.get('/getRentCardById', (req, res) => {
+app.get('/getRentCardById', (req, res) => {
     const cardId = req.query.id;
 
     if (!cardId) {
@@ -334,16 +328,16 @@ app1.get('/getRentCardById', (req, res) => {
 // -------------------------------
 
 // Route to serve the fertilizer items page
-app1.get('/fertilizer-items', (req, res) => {
+app.get('/fertilizer-items', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/fertilizer.html'));
 });
 
 // Route to serve the fertilizer item details page
-app1.get('/harvest-details.html', (req, res) => {
+app.get('/harvest-details.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/fertilizer-productdetails.html'));
 });
 
-app1.get('/getHarvestCardsByCategory', (req, res) => {
+app.get('/getHarvestCardsByCategory', (req, res) => {
     const category = req.query.category || 'all';
 
     let query = 'SELECT * FROM fertilizer';
@@ -382,7 +376,7 @@ app1.get('/getHarvestCardsByCategory', (req, res) => {
 });
 
 // Route to search fertilizer cards
-app1.get('/searchHarvestCards', (req, res) => {
+app.get('/searchHarvestCards', (req, res) => {
     const searchTerm = req.query.term || '';
 
     if (!searchTerm.trim()) {
@@ -443,7 +437,7 @@ app1.get('/searchHarvestCards', (req, res) => {
     });
 });
 
-app1.post('/addHarvestCard', upload.single('image'), (req, res) => {
+app.post('/addHarvestCard', upload.single('image'), (req, res) => {
     console.log('Fertilizer data received:', req.body);
     console.log('Fertilizer image file received:', req.file);
 
@@ -498,7 +492,7 @@ app1.post('/addHarvestCard', upload.single('image'), (req, res) => {
 });
 
 // Route to get a single fertilizer card by ID
-app1.get('/getHarvestCardById', (req, res) => {
+app.get('/getHarvestCardById', (req, res) => {
     const cardId = req.query.id;
 
     if (!cardId) {
@@ -540,12 +534,12 @@ app1.get('/getHarvestCardById', (req, res) => {
 
 
 // Route to serve the cart page
-app1.get('/cart', (req, res) => {
+app.get('/cart', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/cart.html'));
 });
 
 // Route to add an item to the rent cart
-app1.post('/addToRentCart', (req, res) => {
+app.post('/addToRentCart', (req, res) => {
     const { userId, cardId, quantity, days } = req.body;
 
     if (!userId || !cardId) {
@@ -604,7 +598,7 @@ app1.post('/addToRentCart', (req, res) => {
     });
 });
 
-app1.post('/addToFertilizerCart', (req, res) => {
+app.post('/addToFertilizerCart', (req, res) => {
     const { userId, cardId, quantity, days } = req.body;
 
     if (!userId || !cardId) {
@@ -664,7 +658,7 @@ app1.post('/addToFertilizerCart', (req, res) => {
 });
 
 // Update getFertilizerCart to work with the new table structure
-app1.get('/getFertilizerCart', (req, res) => {
+app.get('/getFertilizerCart', (req, res) => {
     const userId = req.query.userId;
 
     if (!userId) {
@@ -703,7 +697,7 @@ app1.get('/getFertilizerCart', (req, res) => {
 });
 
 // Route to get the rent cart items for a user
-app1.get('/getRentCart', (req, res) => {
+app.get('/getRentCart', (req, res) => {
     const userId = req.query.userId;
 
     if (!userId) {
@@ -743,7 +737,7 @@ app1.get('/getRentCart', (req, res) => {
 
 
 // Route to update an item in the rent cart
-app1.put('/updateRentCartItem', (req, res) => {
+app.put('/updateRentCartItem', (req, res) => {
     const { userId, cardId, quantity, days } = req.body;
 
     if (!userId || !cardId || !quantity || !days) {
@@ -768,7 +762,7 @@ app1.put('/updateRentCartItem', (req, res) => {
 });
 
 // Route to update an item in the fertilizer cart (renamed from harvest)
-app1.put('/updateFertilizerCartItem', (req, res) => {
+app.put('/updateFertilizerCartItem', (req, res) => {
     const { userId, cardId, quantity, days } = req.body;
 
     if (!userId || !cardId || !quantity || !days) {
@@ -793,7 +787,7 @@ app1.put('/updateFertilizerCartItem', (req, res) => {
 });
 
 // Route to remove an item from the rent cart
-app1.delete('/removeRentCartItem', (req, res) => {
+app.delete('/removeRentCartItem', (req, res) => {
     const { userId, cardId } = req.query;
 
     if (!userId || !cardId) {
@@ -818,7 +812,7 @@ app1.delete('/removeRentCartItem', (req, res) => {
 });
 
 // Route to remove an item from the fertilizer cart (renamed from harvest)
-app1.delete('/removeFertilizerCartItem', (req, res) => {
+app.delete('/removeFertilizerCartItem', (req, res) => {
     const { userId, cardId } = req.query;
 
     if (!userId || !cardId) {
@@ -843,7 +837,7 @@ app1.delete('/removeFertilizerCartItem', (req, res) => {
 });
 
 // Route to clear the entire rent cart for a user
-app1.delete('/clearRentCart', (req, res) => {
+app.delete('/clearRentCart', (req, res) => {
     const { userId } = req.query;
 
     if (!userId) {
@@ -861,7 +855,7 @@ app1.delete('/clearRentCart', (req, res) => {
 });
 
 // Route to clear the entire fertilizer cart for a user (renamed from harvest)
-app1.delete('/clearFertilizerCart', (req, res) => {
+app.delete('/clearFertilizerCart', (req, res) => {
     const { userId } = req.query;
 
     if (!userId) {
@@ -878,10 +872,7 @@ app1.delete('/clearFertilizerCart', (req, res) => {
     });
 });
 
-// Start server
-app1.listen(port1, () => {
-    console.log(`Server 1 is running on http://localhost:${port1}`);
-});
+
 
 
 
@@ -899,42 +890,42 @@ app1.listen(port1, () => {
 
 
 // Serve the dashboard page
-app2.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/admin.html'));
 });
 
 // Route for View Staff page
-app2.get('/view-staff', (req, res) => {
+app.get('/view-staff', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/viewstaff.html'));
 });
 
 // Route for View Staff page
-app2.get('/viewstaff', (req, res) => {
+app.get('/viewstaff', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/viewstaff.html'));
 });
 
 // Route for View Farmer page
-app2.get('/view-farmer', (req, res) => {
+app.get('/view-farmer', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/viewfarmer.html'));
 });
 
 // Route for View Harvest page
-app2.get('/view-harvest', (req, res) => {
+app.get('/view-harvest', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/viewharvest.html'));
 });
 
 // Route for View Shop page
-app2.get('/view-shop', (req, res) => {
+app.get('/view-shop', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/viewshop.html'));
 });
 
 // Route for View Buyers page
-app2.get('/view-buyers', (req, res) => {
+app.get('/view-buyers', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/viewbuyer.html'));
 });
 
 // Route to handle form submission
-app2.post('/create-staff', (req, res) => {
+app.post('/create-staff', (req, res) => {
     console.log(req.body); // Log the incoming data to ensure it's being passed correctly
     const { first_name, last_name, contact_number, position, gender, date_of_joining, nic, email, username, password } = req.body;
 
@@ -952,7 +943,7 @@ app2.post('/create-staff', (req, res) => {
 
 
 // Route to view all staff
-app2.get('/viewstaff', (req, res) => {
+app.get('/viewstaff', (req, res) => {
     db.query('SELECT * FROM staff', (err, results) => {
         if (err) throw err;
         res.render('viewstaff', { staff: results });
@@ -961,7 +952,7 @@ app2.get('/viewstaff', (req, res) => {
 
 
 // Route to delete staff
-app2.post('/delete-staff', (req, res) => {
+app.post('/delete-staff', (req, res) => {
     const { staff_id } = req.body; // Get the staff_id from the form submission
 
     // Query to delete the staff by staff_id
@@ -974,7 +965,7 @@ app2.post('/delete-staff', (req, res) => {
     });
 });
 
-app2.get('/get-staff', (req, res) => {
+app.get('/get-staff', (req, res) => {
     db.query('SELECT * FROM staff', (err, results) => {
         if (err) {
             console.error(err);
@@ -985,7 +976,7 @@ app2.get('/get-staff', (req, res) => {
 });
 
 // Route to update staff information
-app2.post('/update-staff', (req, res) => {
+app.post('/update-staff', (req, res) => {
     console.log("Update staff request received:", req.body); // Debug log
     const {
         staff_id,
@@ -1055,7 +1046,7 @@ app2.post('/update-staff', (req, res) => {
 });
 
 // Route to get staff count for the dashboard
-app2.get('/staff-count', (req, res) => {
+app.get('/staff-count', (req, res) => {
     db.query('SELECT COUNT(*) as count FROM staff', (err, result) => {
         if (err) {
             console.error("Error getting staff count:", err);
@@ -1070,7 +1061,7 @@ app2.get('/staff-count', (req, res) => {
 
 // Handle form submission for adding Rent Card
 // Add Fertilizer
-app2.post('/addFertilizer', upload.single('image'), (req, res) => {
+app.post('/addFertilizer', upload.single('image'), (req, res) => {
     // Check if the image file is uploaded successfully
     if (!req.file) {
         console.error('No file uploaded!');
@@ -1100,7 +1091,7 @@ app2.post('/addFertilizer', upload.single('image'), (req, res) => {
 });
 
 
-app2.get('/getFertilizers', (req, res) => {
+app.get('/getFertilizers', (req, res) => {
     const query = 'SELECT * FROM fertilizer ORDER BY fertilizer_id DESC';
     db.query(query, (err, result) => {
         if (err) {
@@ -1126,7 +1117,7 @@ app2.get('/getFertilizers', (req, res) => {
 });
 
 
-app2.get('/getFertilizerDetails', (req, res) => {
+app.get('/getFertilizerDetails', (req, res) => {
     const fertilizer_id = req.query.fertilizer_id;
     const query = 'SELECT * FROM fertilizer WHERE fertilizer_id = ?';
     db.query(query, [fertilizer_id], (err, result) => {
@@ -1145,7 +1136,7 @@ app2.get('/getFertilizerDetails', (req, res) => {
 });
 
 
-app2.get('/getOtherFertilizers', (req, res) => {
+app.get('/getOtherFertilizers', (req, res) => {
     const fertilizer_id = req.query.fertilizer_id;
     const query = 'SELECT * FROM fertilizer WHERE fertilizer_id != ? ORDER BY fertilizer_id DESC LIMIT 4';
     db.query(query, [fertilizer_id], (err, result) => {
@@ -1174,7 +1165,7 @@ app2.get('/getOtherFertilizers', (req, res) => {
 
 
 // Add Rent Card
-app2.post('/addRentCard', upload.single('image'), (req, res) => {
+app.post('/addRentCard', upload.single('image'), (req, res) => {
     // Check if the image file is uploaded successfully
     if (!req.file) {
         console.error('No file uploaded!');
@@ -1203,7 +1194,7 @@ app2.post('/addRentCard', upload.single('image'), (req, res) => {
     });
 });
 
-app2.get('/getRentCards', (req, res) => {
+app.get('/getRentCards', (req, res) => {
     const query = 'SELECT * FROM rent_cards ORDER BY card_id DESC';
     db.query(query, (err, result) => {
         if (err) {
@@ -1229,7 +1220,7 @@ app2.get('/getRentCards', (req, res) => {
 });
 
 // Get details of a single Rent Card
-app2.get('/getCardDetails', (req, res) => {
+app.get('/getCardDetails', (req, res) => {
     const card_id = req.query.card_id;
     const query = 'SELECT * FROM rent_cards WHERE card_id = ?';
 
@@ -1244,7 +1235,7 @@ app2.get('/getCardDetails', (req, res) => {
 
 
 // Get other Rent Cards (excluding the selected one)
-app2.get('/getOtherCards', (req, res) => {
+app.get('/getOtherCards', (req, res) => {
     const card_id = req.query.card_id;
     const query = 'SELECT * FROM rent_cards WHERE card_id != ? ORDER BY card_id DESC LIMIT 4';
 
@@ -1259,7 +1250,7 @@ app2.get('/getOtherCards', (req, res) => {
 
 
 // Get all farmers
-app2.get('/get-farmers', (req, res) => {
+app.get('/get-farmers', (req, res) => {
     db.query('SELECT * FROM Farmer', (err, results) => {
         if (err) {
             console.error("Error fetching farmers:", err);
@@ -1270,7 +1261,7 @@ app2.get('/get-farmers', (req, res) => {
 });
 
 // Get farmer count
-app2.get('/farmer-count', (req, res) => {
+app.get('/farmer-count', (req, res) => {
     db.query('SELECT COUNT(*) as count FROM Farmer', (err, result) => {
         if (err) {
             console.error("Error getting farmer count:", err);
@@ -1281,7 +1272,7 @@ app2.get('/farmer-count', (req, res) => {
 });
 
 // Delete farmer
-app2.post('/delete-farmer', (req, res) => {
+app.post('/delete-farmer', (req, res) => {
     const { farmer_id } = req.body;
 
     db.query('DELETE FROM Farmer WHERE FarmerID = ?', [farmer_id], (err, result) => {
@@ -1299,7 +1290,7 @@ app2.post('/delete-farmer', (req, res) => {
 });
 
 // Update farmer
-app2.post('/update-farmer', (req, res) => {
+app.post('/update-farmer', (req, res) => {
     console.log("Update farmer request received:", req.body);
     const {
         farmer_id,
@@ -1371,7 +1362,7 @@ app2.post('/update-farmer', (req, res) => {
 
 
 // Get all buyers
-app2.get('/get-buyers', (req, res) => {
+app.get('/get-buyers', (req, res) => {
     db.query('SELECT * FROM buyer', (err, results) => {
         if (err) {
             console.error("Error fetching buyers:", err);
@@ -1382,7 +1373,7 @@ app2.get('/get-buyers', (req, res) => {
 });
 
 // Get buyer count
-app2.get('/buyer-count', (req, res) => {
+app.get('/buyer-count', (req, res) => {
     db.query('SELECT COUNT(*) as count FROM buyer', (err, result) => {
         if (err) {
             console.error("Error getting buyer count:", err);
@@ -1393,7 +1384,7 @@ app2.get('/buyer-count', (req, res) => {
 });
 
 // Delete buyer
-app2.post('/delete-buyer', (req, res) => {
+app.post('/delete-buyer', (req, res) => {
     const { buyer_id } = req.body;
 
     db.query('DELETE FROM buyer WHERE buyer_id = ?', [buyer_id], (err, result) => {
@@ -1411,7 +1402,7 @@ app2.post('/delete-buyer', (req, res) => {
 });
 
 // Update buyer
-app2.post('/update-buyer', (req, res) => {
+app.post('/update-buyer', (req, res) => {
     console.log("Update buyer request received:", req.body);
     const {
         buyer_id,
@@ -1466,7 +1457,7 @@ app2.post('/update-buyer', (req, res) => {
 
 
 // Get harvest count
-app2.get('/harvest-count', (req, res) => {
+app.get('/harvest-count', (req, res) => {
     db.query('SELECT COUNT(*) as count FROM Harvest', (err, result) => {
         if (err) {
             console.error("Error getting harvest count:", err);
@@ -1477,7 +1468,7 @@ app2.get('/harvest-count', (req, res) => {
 });
 
 // Delete harvest
-app2.post('/delete-harvest', (req, res) => {
+app.post('/delete-harvest', (req, res) => {
     const { buyer_id } = req.body;
 
     db.query('DELETE FROM Harvest WHERE harvest_id = ?', [harvest_id], (err, result) => {
@@ -1495,7 +1486,7 @@ app2.post('/delete-harvest', (req, res) => {
 });
 
 // Update buyer
-app2.post('/update-harvest', (req, res) => {
+app.post('/update-harvest', (req, res) => {
     console.log("Update harvest request received:", req.body);
     const {
         harvest_id,
@@ -1539,9 +1530,9 @@ app2.post('/update-harvest', (req, res) => {
 });
 
 
-// Start server
-app2.listen(port2, () => {
-    console.log(`Server 2 is running on http://localhost:${port2}`);
+// Start a SINGLE server
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 
@@ -1603,7 +1594,7 @@ let fallbackProducts = [];
 
 // API Routes
 // Get all products
-app4.get('/api/products', (req, res) => {
+app.get('/api/products', (req, res) => {
     // Check if database is connected
     if (db.state === 'disconnected') {
         return res.json(fallbackProducts);
@@ -1632,7 +1623,7 @@ app4.get('/api/products', (req, res) => {
 });
 
 // Get a single product
-app4.get('/api/products/:id', (req, res) => {
+app.get('/api/products/:id', (req, res) => {
     const productId = req.params.id;
 
     // Check if database is connected
@@ -1670,7 +1661,7 @@ app4.get('/api/products/:id', (req, res) => {
 
 // Add a new product
 // Add a new product
-app4.post('/api/products', upload.single('image'), (req, res) => {
+app.post('/api/products', upload.single('image'), (req, res) => {
     try {
         const {
             name,
@@ -1782,7 +1773,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 });
 
 // Update a product
-app4.put('/api/products/:id', upload.single('image'), (req, res) => {
+app.put('/api/products/:id', upload.single('image'), (req, res) => {
     try {
         const productId = req.params.id;
         const {
@@ -1909,7 +1900,7 @@ app4.put('/api/products/:id', upload.single('image'), (req, res) => {
 });
 
 // Delete a product
-app4.delete('/api/products/:id', (req, res) => {
+app.delete('/api/products/:id', (req, res) => {
     const productId = req.params.id;
 
     // Check if database is connected
@@ -1941,26 +1932,26 @@ app4.delete('/api/products/:id', (req, res) => {
 });
 
 // Handle product details page
-app4.get('/product-details.html', (req, res) => {
+app.get('/product-details.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'product-details.html'));
 });
 
 // Handle cart page
-app4.get('/cart', (req, res) => {
+app.get('/cart', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'cart.html'));
 });
 
 // Serve the HTML files
-app4.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'harvest.html'));
 });
 
-app4.get('/farmer', (req, res) => {
+app.get('/farmer', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'farmer.html'));
 });
 
 // Error handler for multer file upload errors
-app4.use((err, req, res, next) => {
+app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading
         if (err.code === 'LIMIT_FILE_SIZE') {
@@ -1974,13 +1965,6 @@ app4.use((err, req, res, next) => {
     next();
 });
 
-// Start the server
-app4.listen(port4, () => {
-    console.log(`Server running on port ${port4}`);
-    console.log(`Access the app at http://localhost:${port4}`);
-    console.log(`Access the admin panel at http://localhost:${port4}/farmer`);
-    console.log(`Access the cart at http://localhost:${port4}/cart`);
-});
 
 
 
@@ -2008,18 +1992,13 @@ app4.listen(port4, () => {
 
 
 
-// Start Server
-const PORT = process.env.PORT || 5000;
-app3.listen(port3, () => {
-    console.log(`Server 3 is running on http://localhost:${port3}`);
-});
 
 
-app3.use("/api/buyers", buyersRoutes);
+app.use("/api/buyers", buyersRoutes);
 
-app3.use("/api/dashboard", dashboardRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
-
+/*
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -2034,22 +2013,20 @@ const __filename = fileURLToPath(
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: './.env' });
-
-const app = express();
-
+*/
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'hbs');
-
+/*
 checkConnection();
 
 app.use('/api/customer', userRouter);
 app.use('/api/farmer', farmerRouter);
 app.use('/api/auth', loginRouter);
-
+*/
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "index.html"));
 });
@@ -2074,6 +2051,3 @@ app.get("/staff-dashboard", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "staff-dashboard.html"));
 });
 
-app.listen(3000, () => {
-    console.log("Server started on Port 3000");
-});
