@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Buyers</title>
+    <link rel="stylesheet" href="../../css/admin/style4.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div id="navbar-container"></div>
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">Create Staff</a></li>
+            <li><a href="/viewstaff">View Staff</a></li>
+            <li><a href="/view-farmer">View Farmer</a></li>
+            <li><a href="/view-harvest">View Harvest</a></li>
+            <li><a href="/view-shop">View Shop</a></li>
+            <li><a href="/view-buyers" class="active">View Buyers</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>View Buyers</h1>
+          
+<div style="display: flex; justify-content: center; margin: 20px 0;">
+    <input type="text" id="buyerSearchInput" placeholder="Enter Buyer ID" style="padding: 8px; width: 250px; border: 1px solid #ddd; border-radius: 4px;">
+    <button onclick="searchBuyer()" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Search</button>
+    <button onclick="resetBuyerSearch()" style="padding: 8px 15px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Reset</button>
+  </div>
+  
+        <button id="downloadPDF" class="pdf-btn">PDF ↓</button>
+
+        <div class="table-container">
+            <table id="buyerTable">
+                <thead>
+                    <tr>
+                        <th>Buyer ID</th>
+                        <th>Buyer Name</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                        <th>Contact Number</th>
+                        <th>NIC</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Buyer data will be loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button class="prev-btn">◀</button>
+            <span id="page-info">Page 1 of 1</span>
+            <button class="next-btn">▶</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this buyer?</p>
+            <div class="modal-buttons">
+                <button id="confirmDelete" class="confirm-btn">Yes</button>
+                <button id="cancelDelete" class="cancel-btn">No</button>
+            </div>
+        </div>
+    </div>
+    <div id="footer-container"></div>
+ 
+  <!-- Add this JavaScript at the end of your file -->
+  <script>
+  function searchBuyer() {
+    const searchValue = document.getElementById('buyerSearchInput').value.trim();
+    const tableRows = document.querySelectorAll('table tbody tr');
+    
+    tableRows.forEach(row => {
+      const idCell = row.cells[0].textContent.trim();
+      if (searchValue === '' || idCell.includes(searchValue)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+  
+  function resetBuyerSearch() {
+    document.getElementById('buyerSearchInput').value = '';
+    const tableRows = document.querySelectorAll('table tbody tr');
+    tableRows.forEach(row => {
+      row.style.display = '';
+    });
+  }
+  
+  // Allow search on Enter key press
+  document.getElementById('buyerSearchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      searchBuyer();
+    }
+  });
+  </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Variables
+            const tableBody = document.querySelector("#buyerTable tbody");
+            const prevBtn = document.querySelector(".prev-btn");
+            const nextBtn = document.querySelector(".next-btn");
+            const pageInfo = document.getElementById("page-info");
+            const pdfBtn = document.getElementById("downloadPDF");
+
+            let currentPage = 1;
+            const rowsPerPage = 10;
+            let buyerData = [];
+            let deleteRow = null;
+
+            // Fetch buyers data
+            function loadBuyerData() {
+                fetch('/get-buyers')
+                    .then(response => response.json())
+                    .then(data => {
+                        buyerData = data;
+                        displayTable(currentPage);
+                        updatePageInfo();
+                    })
+                    .catch(error => console.error('Error fetching buyer data:', error));
+            }
+
+            // Display buyer table with pagination
+            function displayTable(page) {
+                tableBody.innerHTML = "";
+                let start = (page - 1) * rowsPerPage;
+                let end = start + rowsPerPage;
+                let paginatedData = buyerData.slice(start, end);
+
+                if (paginatedData.length === 0 && page > 1) {
+                    currentPage--;
+                    displayTable(currentPage);
+                    return;
+                }
+
+                paginatedData.forEach(buyer => {
+                    let row = document.createElement("tr");
+                    row.setAttribute('data-id', buyer.buyer_id);
+                    
+                    row.innerHTML = `
+                        <td>${buyer.buyer_id}</td>
+                        <td>${buyer.buyer_name || ""}</td>
+                        <td class="address-cell">${buyer.address || ""}</td>
+                        <td>${buyer.email || ""}</td>
+                        <td>${buyer.contact_number || ""}</td>
+                        <td>${buyer.NIC || ""}</td>
+                        <td>${buyer.username || ""}</td>
+                        <td>${buyer.PASSWORD || ""}</td>
+                        <td>
+                            <button class="edit-btn">Edit</button>
+                            <form action="/delete-buyer" method="POST">
+                                <input type="hidden" name="buyer_id" value="${buyer.buyer_id}">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // Update dashboard buyer count
+                updateDashboardBuyerCount();
+            }
+
+            // Update page info text
+            function updatePageInfo() {
+                const totalPages = Math.ceil(buyerData.length / rowsPerPage) || 1;
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+                
+                // Disable/enable pagination buttons
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+                
+                // Visual feedback for disabled buttons
+                if (prevBtn.disabled) {
+                    prevBtn.classList.add('disabled');
+                } else {
+                    prevBtn.classList.remove('disabled');
+                }
+                
+                if (nextBtn.disabled) {
+                    nextBtn.classList.add('disabled');
+                } else {
+                    nextBtn.classList.remove('disabled');
+                }
+            }
+
+            // Function to update dashboard buyer count
+            function updateDashboardBuyerCount() {
+                fetch('/buyer-count')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Buyer count updated in database:", data.count);
+                    })
+                    .catch(error => console.error('Error updating buyer count:', error));
+            }
+
+            // Pagination event listeners
+            prevBtn.addEventListener("click", function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayTable(currentPage);
+                    updatePageInfo();
+                }
+            });
+
+            nextBtn.addEventListener("click", function() {
+                const totalPages = Math.ceil(buyerData.length / rowsPerPage) || 1;
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayTable(currentPage);
+                    updatePageInfo();
+                }
+            });
+
+            // PDF Generation
+            pdfBtn.addEventListener("click", function() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('landscape', 'pt', 'a4');
+                
+                // Add title
+                doc.setFontSize(18);
+                doc.text("FarmLink Buyer List", 40, 40);
+                doc.setFontSize(12);
+                doc.text("Generated on: " + new Date().toLocaleDateString(), 40, 60);
+                
+                // Use autotable plugin
+                doc.autoTable({
+                    html: '#buyerTable',
+                    startY: 70,
+                    theme: 'grid',
+                    headStyles: { fillColor: [10, 102, 46], textColor: 255 },
+                    columnStyles: {
+                        8: { cellWidth: 'auto' } // Format the actions column
+                    },
+                    didDrawPage: function(data) {
+                        // Footer
+                        doc.setFontSize(10);
+                        doc.text("FarmLink - Buyer Management System", 40, doc.internal.pageSize.height - 20);
+                        doc.text("Page " + doc.internal.getNumberOfPages(), doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 20);
+                    },
+                    // Exclude the Actions column
+                    columns: [
+                        { header: 'Buyer ID', dataKey: 0 },
+                        { header: 'Buyer Name', dataKey: 1 },
+                        { header: 'Address', dataKey: 2 },
+                        { header: 'Email', dataKey: 3 },
+                        { header: 'Contact Number', dataKey: 4 },
+                        { header: 'NIC', dataKey: 5 },
+                        { header: 'Username', dataKey: 6 },
+                        { header: 'Password', dataKey: 7 }
+                    ]
+                });
+                
+                doc.save("FarmLink_Buyer_List.pdf");
+            });
+
+            // Delete Modal Functions
+            function openDeleteModal(row) {
+                deleteRow = row;
+                document.getElementById("deleteModal").style.display = "flex";
+            }
+
+            function closeDeleteModal() {
+                document.getElementById("deleteModal").style.display = "none";
+                deleteRow = null;
+            }
+
+            // Handle table actions (delegated events)
+            tableBody.addEventListener("click", function(event) {
+                // Delete button action
+                if (event.target.classList.contains("delete-btn")) {
+                    event.preventDefault();
+                    let row = event.target.closest("tr");
+                    openDeleteModal(row);
+                }
+                
+                // Edit button action
+                if (event.target.classList.contains("edit-btn")) {
+                    event.preventDefault();
+                    const row = event.target.closest("tr");
+                    
+                    // Make row editable
+                    makeRowEditable(row);
+                    event.target.textContent = "Save";
+                    event.target.classList.add("save-btn");
+                    event.target.classList.remove("edit-btn");
+                }
+                // Save button action
+                else if (event.target.classList.contains("save-btn")) {
+                    event.preventDefault();
+                    const row = event.target.closest("tr");
+                    const buyerId = row.getAttribute("data-id");
+                    
+                    // Save changes
+                    saveRowChanges(row, buyerId);
+                }
+            });
+
+            // Confirm delete action
+            document.getElementById("confirmDelete").addEventListener("click", function() {
+                if (deleteRow) {
+                    const form = deleteRow.querySelector("form");
+                    form.submit();
+                }
+                closeDeleteModal();
+            });
+
+            // Cancel delete action
+            document.getElementById("cancelDelete").addEventListener("click", function() {
+                closeDeleteModal();
+            });
+
+            // Close modal when clicking outside
+            document.getElementById("deleteModal").addEventListener("click", function(event) {
+                if (event.target === document.getElementById("deleteModal")) {
+                    closeDeleteModal();
+                }
+            });
+
+            // Function to make a row editable
+            function makeRowEditable(row) {
+                const cells = row.querySelectorAll("td:not(:first-child):not(:last-child)");
+                cells.forEach((cell, index) => {
+                    const currentValue = cell.textContent.trim();
+                    
+                    // For address cell, use textarea
+                    if (cell.classList.contains("address-cell")) {
+                        cell.innerHTML = `<textarea rows="2">${currentValue}</textarea>`;
+                    }
+                    // For regular cells, use text input
+                    else {
+                        cell.innerHTML = `<input type="text" value="${currentValue}">`;
+                    }
+                });
+            }
+
+            // Function to save changes to a row
+            function saveRowChanges(row, buyerId) {
+                // Log debug info
+                console.log("Saving changes for buyer ID:", buyerId);
+                
+                const buyerNameInput = row.querySelector("td:nth-child(2) input");
+                const addressTextarea = row.querySelector("td:nth-child(3) textarea");
+                const emailInput = row.querySelector("td:nth-child(4) input");
+                const contactInput = row.querySelector("td:nth-child(5) input");
+                const nicInput = row.querySelector("td:nth-child(6) input");
+                const usernameInput = row.querySelector("td:nth-child(7) input");
+                const passwordInput = row.querySelector("td:nth-child(8) input");
+                
+                if (!buyerNameInput) {
+                    console.error("Failed to find input elements");
+                    return;
+                }
+                
+                const rowData = {
+                    buyer_id: buyerId,
+                    buyer_name: buyerNameInput.value,
+                    address: addressTextarea.value,
+                    email: emailInput.value,
+                    contact_number: contactInput.value,
+                    nic: nicInput.value,
+                    username: usernameInput.value,
+                    password: passwordInput.value
+                };
+                
+                console.log("Data to be saved:", rowData);
+                
+                // Send update to server
+                fetch('/update-buyer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(rowData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Change button back to Edit
+                        const saveBtn = row.querySelector(".save-btn");
+                        if (saveBtn) {
+                            saveBtn.textContent = "Edit";
+                            saveBtn.classList.add("edit-btn");
+                            saveBtn.classList.remove("save-btn");
+                        }
+                        
+                        // Update row with new values
+                        const cells = row.querySelectorAll("td:not(:first-child):not(:last-child)");
+                        
+                        cells[0].textContent = rowData.buyer_name || "";
+                        cells[1].textContent = rowData.address || "";
+                        cells[2].textContent = rowData.email || "";
+                        cells[3].textContent = rowData.contact_number || "";
+                        cells[4].textContent = rowData.nic || "";
+                        cells[5].textContent = rowData.username || "";
+                        cells[6].textContent = rowData.password || "";
+                        
+                        // Show success message
+                        alert("Buyer updated successfully!");
+                    } else {
+                        // Show error message
+                        alert("Error updating buyer: " + (data.error || "Unknown error"));
+                        // Reload data to reset the form
+                        loadBuyerData();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error updating buyer: " + error.message);
+                    loadBuyerData();
+                });
+            }
+            
+            // Initialize
+            loadBuyerData();
+        });
+    </script>
+</body>
+</html>
