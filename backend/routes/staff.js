@@ -35,4 +35,30 @@ router.get("/getFarmers", (req, res) => {
   });
 });
 
+router.delete("/delete/:id", (req, res) => {
+  const farmerId = req.params.id;
+  console.log("Deleting farmer with ID:", farmerId); // Debug log
+
+  const query = "DELETE FROM Farmer WHERE FarmerID = ?"; // ✅ FIXED CASE!
+
+  db.query(query, [farmerId], (err, result) => {
+    if (err) {
+      console.error("Error deleting farmer:", err);
+      return res.status(500).json({ error: "Server error while deleting farmer" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Farmer not found" });
+    }
+
+    res.status(200).json({ message: "Farmer deleted successfully" });
+  });
+});
+
+
+
+
+
+
+
 module.exports = router;

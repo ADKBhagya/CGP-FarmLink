@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard | Farm Link</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Toastify CSS & JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/frontend/css/staff/staff.css">
 </head>
@@ -22,7 +26,7 @@
     <main>
         <!-- Hero section -->
         <section class="hero">
-            <img src="/frontend/assets/staff/image_dashboard.jpg" alt="Dashboard Banner">
+            <img src="/frontend/assets/staff/image.png" alt="Dashboard Banner">
             <h1>
                 <div class="staff"><span>Staff</span></div>
                 <div class="dashboard"><span>Dashboard</span></div>  
@@ -30,28 +34,27 @@
         </section>
         <!-- Hero section -->
         
-    <!-- card section -->
-    <section class="stats-container">
-        <section class="stats">
-          <div class="weather-box">
-            <h2 id="temperature">30°C</h2>
-            <h3 id="weather-condition">Mostly Cloudy</h3>
-            <i id="weather-icon" class="fas fa-cloud"></i>
-            <p id="date">Monday, 28 January</p>
-            <p id="time">09:41 AM</p>
-          </div>
-          <section>
-            <div class="stat-box">Number of Staff<br><strong id="staff-count">...</strong></div>
-            <div class="stat-box">Number of Farmers<br><strong id="farmers-count">...</strong></div>
-          </section>
-          <section>
-            <div class="stat-box">Total Harvest<br><strong id="harvest-count">...</strong></div>
-            <div class="stat-box">Active Buyers<br><strong id="buyers-count">...</strong></div>
-          </section>
-        </section>
-      </section>
-      
-    <!-- card section -->
+        <!-- card section -->
+        <section class="stats-container">
+            <section class="stats">
+            <div class="weather-box">
+                <h2 id="temperature">30°C</h2>
+                <h3 id="weather-condition">Mostly Cloudy</h3>
+                <i id="weather-icon" class="fas fa-cloud"></i>
+                <p id="date">Monday, 28 January</p>
+                <p id="time">09:41 AM</p>
+            </div>
+            <section>
+                <div class="stat-box">Number of Staff<br><strong id="staff-count">...</strong></div>
+                <div class="stat-box">Number of Farmers<br><strong id="farmers-count">...</strong></div>
+            </section>
+            <section>
+                <div class="stat-box">Total Harvest<br><strong id="harvest-count">...</strong></div>
+                <div class="stat-box">Active Buyers<br><strong id="buyers-count">...</strong></div>
+            </section>
+            </section>
+        </section> 
+        <!-- card section -->
     
         <section class="form-container">
              <!-- Navbar section -->
@@ -65,277 +68,349 @@
              <!-- Navbar section -->
 
             <!-- Register Farmer Section -->
-<section id="register-farmer" class="content-section">
-    <h2>Register Farmer</h2>
-    <form id="farmerForm">  
-        <div class="form-group">
-            <label>First Name</label>
-            <input class="input" id="FirstName" type="text" placeholder="" required>
-        </div>
-        <div class="form-group">
-            <label>Last Name</label>
-            <input class="input" id="LastName" type="text" placeholder="" required>
-        </div>
-        <div class="form-group">
-            <label>Email</label>
-            <input class="input" id="Email" type="email" placeholder="name@email.com" required>
-        </div>
-        <div class="form-group">
-            <label>Contact Number</label>
-            <input class="input" id="Contact" type="text" placeholder="0XXX XXX XXX" required>
-        </div>
-        <div class="form-group">
-            <label>Address</label>
-            <input class="input" id="Address" type="text" placeholder="" required>
-        </div>
-        <div class="form-group">
-            <label>NIC</label>
-            <input class="input" id="NIC" type="text" placeholder="" required>
-        </div>
-        <div class="form-group">
-            <label>Gender</label>
-            <select class="input" id="Gender" required>
-                <option></option>
-                <option>Male</option>
-                <option>Female</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Acc No</label>
-            <input class="input" id="AccNumber" type="text" placeholder="" required>
-        </div>
-        <div class="form-group">
-            <label>Location</label>
-            <input class="input" id="Location" type="text" placeholder="" required>
-        </div>
-        <div class="form-group">
-            <label>Acres</label>
-            <input class="input" id="Acres" type="text" placeholder="" required>
-        </div>
-        <div class="form-group">
-            <label>Compost</label>
-            <input class="input" id="Compost" type="text" placeholder="" required>
-        </div>
-        <div class="form-group">
-            <label>Harvest</label>
-            <input class="input" id="Harvest" type="text" placeholder="" required>
-        </div>
-        
-        <div class="form-actions">
-            <button type="button" class="register" onclick="registerFarmer()">Register</button>
-            <button type="button" class="discard" onclick="openDiscardPopup()">Discard</button>
-        </div>
-    </form>
-</section>
-
-              
-                
-                
-                    <!-- Register Farmer Section -->
-
-                    <!-- Register Popup -->
-                    <div class="register-popup" id="registerpopup">
-                        <p>Farmer Registered Successfully!</p>
-                        <div class="buttons">
-                            <button class="ok-btn" onclick="closePopup()">OK</button>
-                        </div>
+            <section id="register-farmer" class="content-section">
+                <h2>Register Farmer</h2>
+                <form id="farmerForm" novalidate>  
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input class="input" id="FirstName" name="FirstName" type="text" placeholder="First Name" required>
                     </div>
-                    <!-- Register Popup -->
-
-                    <!-- Discard Confirmation Popup -->
-                    <div class="discard-popup" id="discardPopup">
-                        <p>Are you sure you want to discard the changes?</p>
-                        <div class="buttons">
-                            <button class="yes-btn" onclick="discardChanges()">Yes</button>
-                            <button class="no-btn" onclick="closeDiscardPopup()">No</button>
-                        </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input class="input" id="LastName" name="LastName" type="text" placeholder="Last Name" required>
                     </div>
-                    <!-- Discard Confirmation Popup -->
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input class="input" id="Email" name="Email" type="email" placeholder="name@email.com" required>
+
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input class="input" id="Contact" type="text" placeholder="0XXX XXX XXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input class="input" id="Address" type="text" placeholder="Address" required>
+                    </div>
+                    <div class="form-group">
+                        <label>NIC</label>
+                        <input class="input" id="NIC" name="NIC" type="text" placeholder="NIC" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select class="input" id="Gender" required>
+                            <option value="">-- Select --</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Acc No</label>
+                        <input class="input" id="AccNumber" name="AccNumber" type="text" placeholder="Account Number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input class="input" id="Location" type="text" placeholder="Location" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Acres</label>
+                        <input class="input" id="Acres" type="text" placeholder="Acres" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Compost</label>
+                        <input class="input" id="Compost" type="text" placeholder="Compost (kg)" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Harvest</label>
+                        <input class="input" id="Harvest" type="text" placeholder="Harvest (kg)" required>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="register" onclick="registerFarmer()">Register</button>
+                        <button type="button" class="discard" onclick="openDiscardPopup()">Discard</button>
+                    </div>
                 </form>
-           
+            </section>
             <!-- Register Farmer Section -->
 
-           <!-- View Farmers Section -->
-<section id="view-farmers" class="content-section" style="display: none;">
-    <h2>View Farmers</h2>
-    <button class="pdf-button" onclick="downloadPDF()">Download PDF</button>
+            <!-- Register Popup -->
+            <div class="register-popup" id="registerpopup">
+                <p>Farmer Registered Successfully!</p>
+                <div class="buttons">
+                    <button class="ok-btn" onclick="closeregisterPopup()">OK</button>
+                </div>
+            </div>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Contact No</th>
-                <th>NIC</th>
-                <th>Acc No</th>
-                <th>Location</th>
-                <th>Acres</th>
-                <th>Compost</th>
-                <th>Harvest</th>
-            </tr>
-        </thead>
-        <tbody id="farmerTableBody">
-            <!-- Dynamic rows will be inserted here -->
-        </tbody>
-    </table>
-</section>
-   <!-- View Farmers Section -->
+            <!-- Discard Confirmation Popup -->
+            <div class="discard-popup" id="discardPopup">
+                <p>Are you sure you want to discard the changes?</p>
+                <div class="buttons">
+                    <button class="yes-btn" onclick="discardChanges()">Yes</button>
+                    <button class="no-btn" onclick="closeDiscardPopup()">No</button>
+                </div>
+            </div>
+            <!-- Discard Confirmation Popup -->
+        <!-- Register Farmer Section -->
 
-              <!-- View Harvest Section -->
-              <section id="view-harvest" class="content-section" style="display: none;">
-                <h2>View Harvest</h2>
-                <button class="pdf-button">Download PDF</button>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Farmer ID</th>
-                            <th>Name</th>
-                            <th>Contact No</th>
-                            <th>Location</th>
-                            <th>Total Harvest</th>
-                            <th>Unit Price (1kg)</th>
-                            <th>Total Value</th>
-                        </tr>
-                    </thead>
-                    <tbody id="HarvestTableBody">
-                        <!-- Dynamic rows will be inserted here -->
-                    </tbody>
-                </table>
-              </section>
-              <!-- View Harvest Section -->
+        <!-- View Farmers Section -->
+        <section id="view-farmers" class="content-section" style="display: none;">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+              <h2 style="margin: 0;">View Farmers</h2>
+              
+              <div class="filter-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input 
+                  type="text" 
+                  class="modern-search" 
+                  placeholder="Search by name, email, or location..." 
+                  onkeyup="filterTable(this, 'farmerTableBody')"
+                >
+                <button class="modern-pdf-button" onclick="downloadFarmersPDF()">📄 Download PDF</button>
 
-<!-- View Shop Section -->
-<section id="view-shop" class="content-section" style="display: none;">
-    <div class="shop-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <div class="shop-tabs">
-        <button id="tab-rent" class="shop-tab active" onclick="switchShopTab('rent')">Rent Items</button>
-        <button id="tab-fert" class="shop-tab" onclick="switchShopTab('fert')">Fertilizers</button>
-      </div>
-      <button class="add-product-btn" onclick="openAddProductPopup()">+ Add Product</button>
-    </div>
-  
-    <!-- Rent Items -->
-    <div id="rent-items-section" class="shop-section">
-      <div id="rent-items-container" class="product-grid"></div>
-    </div>
-  
-    <!-- Fertilizers -->
-    <div id="fertilizer-section" class="shop-section" style="display: none;">
-      <div id="fertilizer-container" class="product-grid"></div>
-    </div>
-  
-    <!-- Add Product Modal -->
-<div id="addProductModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeAddProductPopup()">&times;</span>
-      <h2 class="modal-title">Add New Product</h2>
-      <form id="addProductForm" class="form-grid">
-        <div class="form-left">
-            <label for="addName">Product Name</label>
-            <input type="text" id="addName" placeholder="e.g. Organic Compost" required />
-    
-            <label for="addPrice">Price (Rs)</label>
-            <input type="number" id="addPrice" placeholder="e.g. 1000" required />
-    
-            <label for="addImage">Image URL</label>
-            <input type="text" id="addImage" placeholder="Paste image URL here" required />
-          </div>
-          <div class="form-right">
-            <label for="addDescription">Description</label>
-            <textarea id="addDescription" placeholder="Short product description..." required></textarea>
-    
-            <label for="addStock">Stock</label>
-            <input type="text" id="addStock" placeholder="e.g. 10 or 20 KG" required />
-    
-            <label for="addCategory">Select Category</label>
-            <select id="addCategory" required>
-              <option value="">-- Select Category --</option>
-              <option value="rent">Rent Item</option>
-              <option value="fert">Fertilizer</option>
-            </select>
-          </div>
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">Add Product</button>
-        </div>
-      </form>
-    </div>
-  </div>
+              </div>
+            </div>
+            <div id="farmerTableContainer" class="table-container">
+              <table class="styled-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact No</th>
+                    <th>NIC</th>
+                    <th>Acc No</th>
+                    <th>Location</th>
+                    <th>Acres</th>
+                    <th>Compost</th>
+                    <th>Harvest</th>
+                    <th>Action</th> 
+                  </tr>
+                </thead>
+                <tbody id="farmerTableBody">
+                  <!-- Dynamic rows inserted here -->
+                </tbody>
+              </table>
+            </div>
+        </section>
 
-  <!-- Edit Product Modal -->
-  <div id="editProductModal" class="modal" style="display: none;">
-    <div class="modal-content custom-modal">
-      <span class="close-btn" onclick="closeEditProductPopup()">&times;</span>
-      <h2 class="modal-title">Edit Product</h2>
-      <form id="editProductForm" class="form-grid">
-        <input type="hidden" id="editProductId" />
+        <!-- Farmer Delete Confirmation Popup -->
+        <div class="discard-popup" id="farmerDeletePopup">
+            <p>Are you sure you want to delete this farmer?</p>
+            <div class="buttons">
+              <button class="yes-btn" onclick="confirmFarmerDelete()">Yes</button>
+              <button class="no-btn" onclick="cancelFarmerDelete()">No</button>
+            </div>
+        </div>  
+        <!-- Farmer Delete Confirmation Popup -->
+        <!-- View Farmers Section -->
+
+        <!-- View Harvest Section -->
+        <section id="view-harvest" class="content-section" style="display: none;">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+              <h2 style="margin: 0;">View Harvest</h2>
+              
+              <div class="filter-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input 
+                  type="text" 
+                  class="modern-search" 
+                  placeholder="Search by name, email, or location..." 
+                  onkeyup="filterTable(this, 'HarvestTableBody')"
+                >
+                <button class="modern-pdf-button" onclick="downloadHarvestPDF()">📄 Download PDF</button>
+
+              </div>
+            </div>
+          
+              
+            <div id="harvestTableContainer" class="table-container">
+
+              <table class="styled-table">
+                <thead>
+                  <tr>
+                    <th>Farmer ID</th>
+                    <th>Name</th>
+                    <th>Contact No</th>
+                    <th>Location</th>
+                    <th>Total Harvest</th>
+                    <th>Unit Price (1kg)</th>
+                    <th>Total Value</th>
+                  </tr>
+                </thead>
+                <tbody id="HarvestTableBody">
+                  <!-- Dynamic rows inserted here -->
+                </tbody>
+              </table>
+            </div>
+        </section>
+        <!-- View Harvest Section -->
+
+        <!-- View Shop Section -->
+        <section id="view-shop" class="content-section" style="display: none;">
+            <div class="shop-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div class="shop-tabs">
+                <button id="tab-rent" class="shop-tab active" onclick="switchShopTab('rent')">Rent Items</button>
+                <button id="tab-fert" class="shop-tab" onclick="switchShopTab('fert')">Fertilizers</button>
+            </div>
+            <button class="add-product-btn" onclick="openAddProductPopup()">+ Add Product</button>
+            </div>
         
-        <div class="form-left">
-          <label for="editName">Product Name</label>
-          <input type="text" id="editName" placeholder="Product Name" required />
-  
-          <label for="editPrice">Price (Rs)</label>
-          <input type="number" id="editPrice" placeholder="e.g. 2000" required />
-  
-          <label for="editImage">Image URL</label>
-          <input type="text" id="editImage" placeholder="Paste new image URL" required />
-        </div>
-  
-        <div class="form-right">
-          <label for="editDescription">Description</label>
-          <textarea id="editDescription" placeholder="Product description..." required></textarea>
-  
-          <label for="editStock">Stock</label>
-          <input type="text" id="editStock" placeholder="e.g. 5 or 10 KG" required />
-  
-          <label for="editCategory">Select Category</label>
-          <select id="editCategory" required>
-            <option value="">-- Select Category --</option>
-            <option value="rent">Rent Item</option>
-            <option value="fert">Fertilizer</option>
-          </select>
-        </div>
-  
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">Save Changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  
-  
-  
-  </section>
-  
- <!-- View Shop Section -->
 
- <!-- View Buyers Section -->
- <section id="view-buyers" class="content-section" style="display: none;">
-    <h2>View Buyers</h2>
-    <button class="pdf-button">Download PDF</button>
+            <!-- Rent Items -->
+            <div id="rent-items-section" class="shop-section">
+            <div id="rent-items-container" class="product-grid"></div>
+            </div>
+        
+            <!-- Fertilizers -->
+            <div id="fertilizer-section" class="shop-section" style="display: none;">
+            <div id="fertilizer-container" class="product-grid"></div>
+            </div>
+        
+            <!-- Add Product Modal -->
+            <div id="addProductModal" class="modal" style="display: none;">
+            <div class="modal-content modern-modal">
+            <span class="close-btn" onclick="closeAddProductPopup()">&times;</span>
+            <h2 class="modal-title">Add New Product</h2>
+        
+            <form id="addProductForm" class="form-grid-modern">
+                <div class="form-column">
+                <div class="form-group">
+                    <label for="addName">Product Name</label>
+                    <input type="text" id="addName" placeholder="e.g. Organic Compost" required />
+                </div>
+        
+                <div class="form-group">
+                    <label for="addPrice">Price (Rs)</label>
+                    <input type="number" id="addPrice" placeholder="e.g. 1000" required />
+                </div>
+        
+                <div class="form-group">
+                    <label for="addImage">Image URL</label>
+                    <input type="text" id="addImage" placeholder="Paste image URL here" required />
+                </div>
+                </div>
+        
+                <div class="form-column">
+                <div class="form-group">
+                    <label for="addDescription">Description</label>
+                    <textarea id="addDescription" placeholder="Short product description..." required></textarea>
+                </div>
+        
+                <div class="form-group">
+                    <label for="addStock">Stock</label>
+                    <input type="text" id="addStock" placeholder="e.g. 10 or 20 KG" required />
+                </div>
+        
+                <div class="form-group">
+                    <label for="addCategory">Select Category</label>
+                    <select id="addCategory" required>
+                    <option value="">-- Select Category --</option>
+                    <option value="rent">Rent Item</option>
+                    <option value="fert">Fertilizer</option>
+                    </select>
+                </div>
+                </div>
+        
+                <div class="form-actions-center">
+                <button type="submit" class="submit-btn-modern"> Add Product</button>
+                </div>
+            </form>
+            </div>
+            </div>
+        
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Contact No</th>
-                <th>Mail</th>
-                <th>Item ID</th>
-                <th>Product Name</th>
-                <th>Price</th>  
-                <th>Total Amount</th>
-            </tr>
-        </thead>
-        <tbody id="buyerTableBody">
-            <!-- Dynamic rows will be inserted here -->
-        </tbody>
-    </table>
- </section>
-</section>
- <!-- View Buyers Section -->
-</main>
+            <!-- Edit Product Modal -->
+            <div id="editProductModal" class="modal" style="display: none;">
+                <div class="modal-content modern-modal">
+                <span class="close-btn" onclick="closeEditProductPopup()">&times;</span>
+                <h2 class="modal-title"> Edit Product</h2>
+            
+                <form id="editProductForm" class="form-grid-modern">
+                    <input type="hidden" id="editProductId" />
+            
+                    <div class="form-column">
+                    <div class="form-group">
+                        <label for="editName">Product Name</label>
+                        <input type="text" id="editName" placeholder="Product Name" required />
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="editPrice">Price (Rs)</label>
+                        <input type="number" id="editPrice" placeholder="e.g. 2000" required />
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="editImage">Image URL</label>
+                        <input type="text" id="editImage" placeholder="Paste new image URL" required />
+                    </div>
+                    </div>
+            
+                    <div class="form-column">
+                    <div class="form-group">
+                        <label for="editDescription">Description</label>
+                        <textarea id="editDescription" placeholder="Product description..." required></textarea>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="editStock">Stock</label>
+                        <input type="text" id="editStock" placeholder="e.g. 5 or 10 KG" required />
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="editCategory">Select Category</label>
+                        <select id="editCategory" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="rent">Rent Item</option>
+                        <option value="fert">Fertilizer</option>
+                        </select>
+                    </div>
+                    </div>
+            
+                    <div class="form-actions-center">
+                    <button type="submit" class="submit-btn-modern">Save Changes</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </section> 
+        <!-- View Shop Section -->
+
+        <!-- View Buyers Section -->
+        <section id="view-buyers" class="content-section" style="display: none;">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+              <h2 style="margin: 0;">View Buyers</h2>
+              
+              <div class="filter-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input 
+                  type="text" 
+                  class="modern-search" 
+                  placeholder="Search by name, email, or location..." 
+                  onkeyup="filterTable(this, 'buyerTableBody')"
+                >
+                <button class="modern-pdf-button" onclick="downloadBuyerPDF()">📄 Download PDF</button>
+              </div>
+            </div>
+          
+            <div id="buyerTableContainer" class="table-container">
+              <table class="styled-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Contact No</th>
+                    <th>Mail</th>
+                    <th>Item ID</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="buyerTableBody">
+                  <!-- Dynamic rows inserted here -->
+                </tbody>
+              </table>
+            </div>
+        </section>
+        <!-- View Buyers Section -->
+    </main>
 
 
     <!-- Footer Section -->
@@ -362,8 +437,8 @@
             </div> 
         </div>
     </footer>
-     <!-- Footer Section -->
-
+    <!-- Footer Section -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="/frontend/js/staff/dashboard.js"></script>
     <script src="/script.js"></script>
 </body>

@@ -92,85 +92,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 //Register Farmer section
-function openregisterPopup() {
-    let form = document.querySelector(".content-section form");
-
-    if (form.checkValidity()) {
-        let popup = document.getElementById("registerpopup");
-        popup.classList.add("open-register-popup");
-        popup.style.visibility = "visible";
-        popup.style.transform = "translateX(-50%) scale(1)";
-    } else {
-        form.reportValidity(); 
-    }
-}
-
-function closeregisterPopup() {
-    let popup = document.getElementById("registerpopup");
-    popup.classList.remove("open-register-popup");
-    popup.style.visibility = "hidden";
-    popup.style.transform = "translateX(-50%) scale(0)";
-}
-
-function openDiscardPopup() {
-    let form = document.querySelector(".content-section form");
-    let inputs = form.querySelectorAll("input[required], select[required]");
-    let isEmpty = true;
-
-    inputs.forEach(input => {
-        if (input.value.trim()) {
-            isEmpty = false;
-        }
-    });
-
-    if (!isEmpty) {
-        let discardPopup = document.getElementById("discardPopup");
-        discardPopup.style.visibility = "visible";
-        discardPopup.style.transform = "translateX(-50%) scale(1)";
-    } else {
-              // Focus on the first required field and trigger validation tooltip
-        let firstRequiredField = document.querySelector("input[required]");
-        if (firstRequiredField) {
-            firstRequiredField.reportValidity();
-            firstRequiredField.focus();
-        }
-    }
-}
-
-function closeDiscardPopup() {
-    let discardPopup = document.getElementById("discardPopup");
-    discardPopup.style.visibility = "hidden";
-    discardPopup.style.transform = "translateX(-50%) scale(0)";
-}
-
-function discardChanges() {
-    let form = document.querySelector(".content-section form");
-    form.reset();
-    closeDiscardPopup();
-}
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Function to allow only letters (First Name, Last Name)
+    // Allow only letters
     function validateLetters(input) {
         input.addEventListener("input", function () {
-            this.value = this.value.replace(/[^A-Za-z ]/g, ''); // Remove any non-letter character
+            this.value = this.value.replace(/[^A-Za-z ]/g, '');
         });
     }
 
-    // Function to allow only numbers (Contact No, NIC, Account No)
+    // Allow only numbers
     function validateNumbers(input) {
         input.addEventListener("input", function () {
-            this.value = this.value.replace(/\D/g, ''); // Remove any non-digit character
+            this.value = this.value.replace(/\D/g, '');
         });
     }
 
-    // Contact Number formatting
+    // Format contact number
     function formatContactNumber(input) {
         input.addEventListener("input", function () {
-            let cleaned = this.value.replace(/\D/g, ""); // Remove non-numeric characters
-            if (cleaned.length > 10) cleaned = cleaned.slice(0, 10); 
-            
-            let formatted = cleaned.replace(/^(\d{4})(\d{3})?(\d{3})?$/, function (_, p1, p2, p3) {
+            let cleaned = this.value.replace(/\D/g, '');
+            if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
+
+            let formatted = cleaned.replace(/^(\d{3})(\d{3})?(\d{4})?$/, function (_, p1, p2, p3) {
                 return p3 ? `${p1} ${p2} ${p3}` : p2 ? `${p1} ${p2}` : p1;
             });
 
@@ -178,17 +122,70 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Apply validation to specific fields
-    validateLetters(document.querySelector("input[placeholder='']")); 
-    validateLetters(document.querySelectorAll("input[placeholder='']")[1]); 
-    
-    let contactInput = document.querySelector("input[placeholder='0XXX XXX XXX']");
-    validateNumbers(contactInput);
-    formatContactNumber(contactInput);
+    // Apply validations
+    validateLetters(document.getElementById("FirstName"));
+    validateLetters(document.getElementById("LastName"));
 
-    validateNumbers(document.querySelector("input[placeholder='NIC']"));
-    validateNumbers(document.querySelector("input[placeholder='Acc No']"));
+    validateNumbers(document.getElementById("Contact"));
+    formatContactNumber(document.getElementById("Contact"));
+
+    validateNumbers(document.getElementById("NIC"));
+    validateNumbers(document.getElementById("AccNumber"));
+    validateNumbers(document.getElementById("Acres"));
+    validateNumbers(document.getElementById("Compost"));
+    validateNumbers(document.getElementById("Harvest"));
+
+   
+
+    window.openregisterPopup = function () {
+        const popup = document.getElementById("registerpopup");
+        popup.classList.add("open-register-popup");
+        popup.style.visibility = "visible";
+        popup.style.transform = "translateX(-50%) scale(1)";
+    };
+
+    window.closeregisterPopup = function () {
+        const popup = document.getElementById("registerpopup");
+        popup.classList.remove("open-register-popup");
+        popup.style.visibility = "hidden";
+        popup.style.transform = "translateX(-50%) scale(0)";
+    };
+
+    window.openDiscardPopup = function () {
+        let form = document.getElementById("farmerForm");
+        let inputs = form.querySelectorAll("input[required], select[required]");
+        let isEmpty = true;
+
+        inputs.forEach(input => {
+            if (input.value.trim()) {
+                isEmpty = false;
+            }
+        });
+
+        if (!isEmpty) {
+            document.getElementById("discardPopup").style.visibility = "visible";
+            document.getElementById("discardPopup").style.transform = "translateX(-50%) scale(1)";
+        } else {
+            let firstRequiredField = document.querySelector("input[required]");
+            if (firstRequiredField) {
+                firstRequiredField.reportValidity();
+                firstRequiredField.focus();
+            }
+        }
+    };
+
+    window.closeDiscardPopup = function () {
+        const discardPopup = document.getElementById("discardPopup");
+        discardPopup.style.visibility = "hidden";
+        discardPopup.style.transform = "translateX(-50%) scale(0)";
+    };
+
+    window.discardChanges = function () {
+        document.getElementById("farmerForm").reset();
+        closeDiscardPopup();
+    };
 });
+
 
 //View shop section
 
@@ -460,3 +457,82 @@ function handleDelete() {
     }
     closeDeletePopup(); // Close the popup after deleting
 }
+
+//PDF Download Function
+
+async function downloadFarmersPDF() {
+    const section = document.getElementById("view-farmers");
+    const originalDisplay = section.style.display;
+  
+    // Step 1: Make section visible if hidden
+    section.style.display = "block";
+  
+    // Step 2: Load data if needed
+    await loadFarmers(); // Optional but recommended if not yet loaded
+  
+    // Step 3: Wait for DOM render, then export
+    setTimeout(() => {
+      const element = document.getElementById('farmerTableContainer');
+      if (element) {
+        console.log("✅ Exporting Farmer Table HTML:", element.innerHTML);
+        html2pdf().from(element).save('farmers-report.pdf');
+      } else {
+        console.error("❌ Farmer table not found.");
+      }
+  
+      // Step 4: Restore original display
+      section.style.display = originalDisplay;
+    }, 1000); // Wait 1 second for DOM updates
+  }
+  
+  
+  async function downloadBuyersPDF() {
+    const section = document.getElementById("view-buyers");
+    const originalDisplay = section.style.display;
+  
+    section.style.display = "block";
+    await loadBuyers();
+  
+    setTimeout(() => {
+      const element = document.getElementById('buyerTableContainer');
+      if (element) {
+        console.log("✅ Exporting Buyer Table HTML:", element.innerHTML);
+        html2pdf().from(element).save('buyers-report.pdf');
+      } else {
+        console.error("❌ Buyer table not found.");
+      }
+      section.style.display = originalDisplay;
+    }, 1000);
+  }
+  
+  async function downloadHarvestPDF() {
+    const section = document.getElementById("view-harvest");
+    const originalDisplay = section.style.display;
+  
+    section.style.display = "block";
+    await loadHarvest();
+  
+    setTimeout(() => {
+      const element = document.getElementById('harvestTableContainer');
+      if (element) {
+        console.log("✅ Exporting Harvest Table HTML:", element.innerHTML);
+        html2pdf().from(element).save('harvest-report.pdf');
+      } else {
+        console.error("❌ Harvest table not found.");
+      }
+      section.style.display = originalDisplay;
+    }, 1000);
+  }
+  
+  
+    // Optional filter function
+    function filterTable(input, tableBodyId) {
+      const filter = input.value.toLowerCase();
+      const rows = document.getElementById(tableBodyId).getElementsByTagName("tr");
+        for (let row of rows) {
+        row.style.display = [...row.cells].some(cell => 
+            cell.textContent.toLowerCase().includes(filter)
+        ) ? "" : "none";
+        }
+
+    }
