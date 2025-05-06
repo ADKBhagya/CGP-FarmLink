@@ -1,5 +1,13 @@
 // === Register Farmer ===
 async function registerFarmer() {
+  const form = document.getElementById("farmerForm");
+
+  // ✅ Check form validation before submitting
+  if (!form.checkValidity()) {
+    form.reportValidity();  // This shows the default browser popup
+    return; // stop here if validation fails
+  }
+
   const farmerData = {
     FirstName: document.getElementById("FirstName").value,
     LastName: document.getElementById("LastName").value,
@@ -23,8 +31,8 @@ async function registerFarmer() {
     });
     const result = await res.json();
     if (res.ok) {
-      alert("✅ Farmer Registered! ID: " + result.StaffID);
-      document.getElementById("farmerForm").reset();
+      form.reset();
+      openregisterPopup(); // ✅ FIXED: call the global function directly
     } else {
       alert("❌ " + result.error);
     }
@@ -33,6 +41,7 @@ async function registerFarmer() {
     console.error(error);
   }
 }
+
 
 // === Load Farmers ===
 async function loadFarmers() {
@@ -44,7 +53,7 @@ async function loadFarmers() {
 
     farmers.forEach(farmer => {
       tableBody.innerHTML += `
-        <tr>
+        <tr data-id="${farmer.FarmerID}">
           <td>${farmer.FarmerID}</td>
           <td>${farmer.FirstName} ${farmer.LastName}</td>
           <td>${farmer.Email}</td>
@@ -55,7 +64,11 @@ async function loadFarmers() {
           <td>${farmer.Acres}</td>
           <td>${farmer.Compost}</td>
           <td>${farmer.Harvest}</td>
-        </tr>`;
+          <td>
+            <button onclick="promptFarmerDelete(${farmer.FarmerID})" class="b-delete">Delete</button>
+          </td>
+        </tr>
+        `;
     });
   } catch (error) {
     console.error("Error loading farmers:", error);
@@ -80,7 +93,8 @@ async function loadHarvest() {
           <td>${h.TotalHarvest}</td>
           <td>${h.UnitPrice}</td>
           <td>${h.TotalValue}</td>
-        </tr>`;
+        </tr>
+        `;
     });
   } catch (error) {
     console.error("Error loading harvest:", error);
@@ -344,6 +358,53 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Failed to load summary data:", err);
     });
 });
+
+
+let farmerToDeleteId = null;
+
+function promptFarmerDelete(id) {
+  farmerToDeleteId = id;
+  const popup = document.getElementById("farmerDeletePopup");
+  popup.style.visibility = "visible";
+  popup.style.transform = "translateX(-50%) scale(1)";
+}
+
+function cancelFarmerDelete() {
+  farmerToDeleteId = null;
+  const popup = document.getElementById("farmerDeletePopup");
+  popup.style.visibility = "hidden";
+  popup.style.transform = "translateX(-50%) scale(0)";
+}
+
+async function confirmFarmerDelete() {
+  if (!farmerToDeleteId) return;
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/staff/delete/${farmerToDeleteId}`, {
+      method: "DELETE"
+    });
+
+    if (res.ok) {
+      Toastify({
+        text: "✅ Farmer deleted!",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#E54335",
+      }).showToast();
+
+      cancelFarmerDelete(); // ✅ CLOSE the popup before reload
+      loadFarmers();        // ✅ Then reload data
+
+    } else {
+      const result = await res.json();
+      alert("❌ Delete failed: " + result.error);
+    }
+  } catch (error) {
+    console.error("Delete error:", error);
+    alert("❌ Server error.");
+  }
+}
 
 
 

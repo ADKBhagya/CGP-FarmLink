@@ -405,6 +405,7 @@ input:active, select:active {
 
 
 
+
 /* Pop Up Buttons*/
 .register-popup {
     width: 400px;
@@ -499,6 +500,8 @@ button:hover {
     margin-top: 15px;
 }
 
+
+
 @media (max-width: 768px) {
     form {
         grid-template-columns: 1fr; 
@@ -550,181 +553,229 @@ button:hover {
 
 
 /*View Section*/
-.content-section {
-    display: flex;                 
-    justify-content: space-between; 
-    padding: 10px;
-    width: 100%;
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.content-section h2 {
-    margin: 0;  
+.table-container {
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
-
-.pdf-button {
-    position: absolute;
-    background: var(--green);
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    border-radius: 10px;
-    margin-left:1005px ;
-    margin-top: -40px;
-}
-
-table {
+  
+.styled-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table, th, td {
-    border: 1px solid black;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    min-width: 800px;
+  }
+  
+  .styled-table thead {
+    background-color: #011627;
+    color: #ffffff;
+  }
+  
+  .styled-table th,
+  .styled-table td {
+    padding: 12px 15px;
     text-align: center;
-    padding: 10px;
-}
-
-.delete-button {
-    background: var(--red);
+  }
+  
+  .styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+  
+  .styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .styled-table tbody tr:hover {
+    background-color: #e6f7ed;
+  }
+  
+  .modern-pdf-button {
+    background-color:#eb0505;
     color: white;
-    padding: 5px 10px;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  
+  .modern-pdf-button:hover {
+    background-color: #eb0505;
+  }
+
+  .section-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* Search Field */
+  .modern-search {
+    padding: 12px 20px;
+    font-size: 15px;
+    border: 2px solid #31A74F;
+    border-radius: 999px;
+    outline: none;
+    background-color: #f4fff4;
+    min-width: 260px;
+    transition: 0.2s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .modern-search:focus {
+    background-color: #e9ffea;
+    border-color: #011627;
+  }
+  
+  .modern-pdf-button {
+    background-color: var(--green);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .modern-pdf-button:hover {
+    background-color: #c40303;
+  }
+  
+  .buyer-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 15px 10px;
+    margin-bottom: 15px;
+  }
+
+    .b-delete {
+    width:60px;
+    height: 30px;
+    border-radius: 6px;
+    background-color:var(--red);
     border: none;
     cursor: pointer;
-    border-radius: 10px;
-}
-
-@media screen and (max-width: 1024px) {
-    .pdf-button {
-        margin-left: 410px; 
-        width: 100%; 
-        text-align: center;
-        display: block;
-        
-    }
-
-    .pdf-button {
-        width: auto;
-        margin-left: 520px;
-        font-size: 10px;
-    }
-
-    table {
-        width: 95%;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .content-section {
-        flex-direction: column; 
-        text-align: center;
-    }
-
-    .pdf-button {
-        width: auto;
-        margin-left: 230px;
-        font-size: 10px;
-    }
-
-    table {
-        width: 400px;
-        font-size: 10px;
-    }
-
+    color: #fff;
+    transition: transform 0.2s ease, background-color 0.3s;
     
-}
-
-@media screen and (max-width: 480px) {
-    .pdf-button {
-        padding: 8px 12px; 
-        font-size: 14px; 
-    }
-
-    th, td {
-        padding: 5px;
-    }
-
-    table {
-        width:400px;
-        font-size: 10px; 
-    }
-}
-
+  }
+  
 
 /*View shop Section*/
 
 .card {
     background: #ffffff;
-    border-radius: 20px;
-    padding: 0;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition: transform 0.3s ease;
-    width: 260px;
-}
-
-.card:hover {
-    transform: translateY(-6px);
-}
-
-.card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-}
-
-.card h3 {
-    margin: 15px 0 5px;
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-}
-
-.card p {
-    margin: 0 0 5px;
-    font-size: 14px;
-    color: #555;
-}
-
-.card .action-buttons {
+    border-radius: 24px;
+    padding: 20px 15px;
+    width: 270px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 18px;
+    transition: transform 0.3s;
+  }
+  
+  .card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+  }
+  
+  .card p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 2px 0;
+  }
+  
+  .card .action-buttons {
+    display: flex;
     gap: 10px;
-    margin: 15px 0;
-}
-
-.btn-edit, .btn-delete {
-    width:90px;
-    border: none;
-    color: #fff;
-    font-weight: 600;
+    margin-top: 16px;
+  }
+  
+  .btn-edit,
+  .btn-delete {
+    width:100px;
+    padding: 8px 18px;
+    border-radius: 30px;
     font-size: 13px;
-    padding: 8px 16px;
-    border-radius: 25px;
+    font-weight: 600;
+    border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s;
-}
-
-.btn-edit {
-    background-color: var(--green);
-}
-
-.btn-delete {
-    background-color: var(--red);
-}
-
-.btn-edit:hover, .btn-delete:hover {
+    color: #fff;
+    transition: transform 0.2s ease, background-color 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-edit {
+    background-color: #22c55e;
+  }
+  
+  .btn-edit:hover {
+    background-color: #16a34a;
     transform: scale(1.05);
-}
-
+  }
+  
+  .btn-delete {
+    background-color: #ef4444;
+  }
+  
+  .btn-delete:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+  }
+  
+  
 /* Tabs + Add Button */
 .shop-tab {
     background: none;
     border: 2px solid var(--green);
     padding: 8px 18px;
     margin-right: 10px;
+    margin-top: 20px;
     font-weight: 600;
     border-radius: 8px;
     color: #011627;
@@ -779,8 +830,9 @@ table, th, td {
   }
   .modal-title {
     margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 600;
+    color:var(--green);
   }
   .close-btn {
     position: absolute;
@@ -789,54 +841,88 @@ table, th, td {
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
-  }
-  .form-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  .form-left,
-  .form-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  .form-actions {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-  }
-  .submit-btn {
-    background-color: var(--green);
-    color: white;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 800;
-    cursor: pointer;
+    color : var(--green)
   }
   
-  input, textarea, select {
-    width: 100%;
-    padding: 8px;
+  
+
+
+/* Modern Modal Styles */
+.modern-modal {
+    max-width: 850px;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    background: #ffffff;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Grid */
+  .form-grid-modern {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+  
+  /* Columns */
+  .form-column {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  /* Inputs */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1f2937;
+  }
+  
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
     border-radius: 10px;
-    border: 1px dashed transparent;
-    background: white;
-    margin-bottom: 10px;
-    font-size: 14px;
-    transition: border 0.3s ease-in-out;
-}
-
-textarea {
-    min-height: 80px;
-}
-
-input::placeholder, textarea::placeholder {
-    color: var(--dark-gray);
-    font-family: poppins;
-}
+    font-size: 15px;
+    transition: border 0.3s;
+  }
+  
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: #31A74F;
+    outline: none;
+  }
+  
+  /* Button */
+  .form-actions-center {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .submit-btn-modern {
+    background-color: #31A74F;
+    color: white;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-btn-modern:hover {
+    background-color: #27893d;
+  }
+  
 
 @media screen and (max-width: 768px) {
 
