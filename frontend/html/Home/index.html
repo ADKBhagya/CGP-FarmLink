@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmLink - Agricultural Solutions</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/Users/achindadulsara/Documents/GitHub/CGP-FarmLink/frontend/css/Home_css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Animation -->
+    <div class="page-loader">
+        <div class="loader-content">
+            <div class="loader-logo">
+                Farm<span>Link</span>
+            </div>
+            <div class="loader-spinner"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">Farm<span class="text-success">Link</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link active" href="/Users/achindadulsara/Documents/GitHub/CGP-FarmLink/frontend/html/Home/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Harvest</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Meetings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
+                </ul>
+                <div class="nav-buttons">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-success dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <span>Get Started</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end animate slideIn">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fas fa-user-shield me-2"></i> Admin Portal
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fas fa-user-tie me-2"></i> Staff Portal
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fas fa-tractor me-2"></i> Farmer Portal
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fas fa-shopping-cart me-2"></i> Buyer Portal
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="dropdown d-inline-block ms-2">
+                        <button class="btn btn-outline-success dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-plus me-2"></i>
+                            <span>Join Us</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end animate slideIn">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fas fa-user-shield me-2"></i> Join as Admin
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fas fa-user-tie me-2"></i> Join as Staff
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fas fa-tractor me-2"></i> Join as Farmer
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fas fa-shopping-cart me-2"></i> Join as Buyer
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" data-aos="fade-up">
+        <div class="container text-center py-5">
+            <div class="farming-tag">A Farming Solutions</div>
+            <h1 data-aos="fade-up" data-aos-delay="200">Empowering Farmers' Lives,<br>Building Smarter Agricultural Solutions</h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="400">
+                "Digital farming enhances agriculture using technology for precision, efficiency,<br>
+                sustainability,and improved productivity"
+            </p>
+            <a href="/Users/achindadulsara/Documents/GitHub/CGP-FarmLink/frontend/html/aboutUs/aboutUs.html" class="btn btn-success mt-4" data-aos="fade-up" data-aos-delay="600">
+                About Us <i class="fas fa-arrow-right ms-2"></i>
+              </a>
+              
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section" data-aos="fade-up">
+        <div class="container">
+            <div class="stats-grid">
+                <!-- Weather Card -->
+                <div class="weather-card stat-card" data-aos="fade-right" data-aos-delay="200">
+                    <div class="temp">30°C</div>
+                    <div class="weather-status">Mostly Cloud</div>
+                    <div class="weather-icon">
+                        <div class="sun-icon"></div>
+                    </div>
+                    <div class="date-time">
+                        Monday,<br>
+                        28 January<br>
+                        09:41 AM
+                    </div>
+                </div>
+
+                <!-- Farmer Count Card -->
+                <div class="farmer-card stat-card" data-aos="fade-left" data-aos-delay="400">
+                    <div class="card-content">
+                        <div class="title">Farmer<br>Count</div>
+                        <div class="dots">:</div>
+                        <div class="count">034</div>
+                    </div>
+                </div>
+
+                <!-- Total Harvest Card -->
+                <div class="harvest-stat stat-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="title">Total Harvest</div>
+                    <div class="value">45000kg</div>
+                </div>
+
+                <!-- Active Buyers Card -->
+                <div class="buyers-stat stat-card" data-aos="fade-up" data-aos-delay="800">
+                    <div class="title">Active Buyers</div>
+                    <div class="value">0134</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meetings Section -->
+    <section class="meetings-section" data-aos="fade-up">
+        <div class="container py-5">
+            <div class="section-header">
+                <h2 data-aos="fade-right">Meetings</h2>
+                <a href="#" class="explore-more" data-aos="fade-left">
+                    Explore More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="meetings-grid">
+                <div class="meeting-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="card-image">
+                        <img src="/Users/achindadulsara/Documents/GitHub/CGP-FarmLink/frontend/assets/Home_img/img01.jpg" alt="Staff Meeting 2025">
+                        <div class="card-overlay">
+                            <div class="meeting-content">
+                                <h3>Staff Meeting 2025</h3>
+                                <p class="meeting-details">
+                                    <span class="date">28 Jan 2025</span>
+                                    <span class="bullet">•</span>
+                                    <span class="time">3:30 pm</span>
+                                </p>
+                                <button class="show-more">
+                                    Show more
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meeting-card" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="card-image">
+                        <img src="/Users/achindadulsara/Documents/GitHub/CGP-FarmLink/frontend/assets/Home_img/img02.jpg" alt="Staff Meeting 2025">
+                        <div class="card-overlay">
+                            <div class="meeting-content">
+                                <h3>Staff Meeting 2025</h3>
+                                <p class="meeting-details">
+                                    <span class="date">15 Feb 2025</span>
+                                    <span class="bullet">•</span>
+                                    <span class="time">4:15 pm</span>
+                                </p>
+                                <button class="show-more">
+                                    Show more
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meeting-card" data-aos="zoom-in" data-aos-delay="600">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284" alt="Farmers Meeting 2025">
+                        <div class="card-overlay">
+                            <div class="meeting-content">
+                                <h3>Farmers Meeting 2025</h3>
+                                <p class="meeting-details">
+                                    <span class="date">10 Mar 2025</span>
+                                    <span class="bullet">•</span>
+                                    <span class="time">1:00 pm</span>
+                                </p>
+                                <button class="show-more">
+                                    Show more
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Harvest Section -->
+    <section class="harvest-section">
+        <div class="container py-5">
+            <div class="section-header">
+                <h2>Harvest</h2>
+                <a href="#" class="explore-more">
+                    Explore More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="harvest-cards">
+                <div class="harvest-card">
+                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d" class="card-img" alt="Michele John">
+                    <div class="card-content">
+                        <div class="profile-info">
+                            <h3>Michele John</h3>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Kotawehera</span>
+                        </div>
+                        <div class="stock-info">
+                            <span class="stock-status">450KG in Stock</span>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="price">Rs 950.00</div>
+                    </div>
+                </div>
+
+                <div class="harvest-card">
+                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d" class="card-img" alt="Michele John">
+                    <div class="card-content">
+                        <div class="profile-info">
+                            <h3>Michele John</h3>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Kotawehera</span>
+                        </div>
+                        <div class="stock-info">
+                            <span class="stock-status">450KG in Stock</span>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="price">Rs 950.00</div>
+                    </div>
+                </div>
+
+                <div class="harvest-card">
+                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d" class="card-img" alt="Michele John">
+                    <div class="card-content">
+                        <div class="profile-info">
+                            <h3>Michele John</h3>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Kotawehera</span>
+                        </div>
+                        <div class="stock-info">
+                            <span class="stock-status">450KG in Stock</span>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="price">Rs 950.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer data-aos="fade-up">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Farm<span>Link</span></h3>
+                </div>
+                <div class="footer-contact">
+                    <p>Contact Us</p>
+                    <a href="mailto:FarmLink@gmail.com">FarmLink@gmail.com</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Custom JS -->
+    <script src="/Users/achindadulsara/Documents/GitHub/CGP-FarmLink/frontend/js/Home_js/main.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Page Loader
+        window.addEventListener('load', function() {
+            document.querySelector('.page-loader').style.display = 'none';
+        });
+    </script>
+
+</body>
+</html> 
