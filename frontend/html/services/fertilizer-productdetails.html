@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmLink - Fertilizer Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header with back button */
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+            margin-right: 20px;
+        }
+
+        .share-button {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* Product detail section */
+        .product-detail {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .product-detail {
+                flex-direction: row;
+            }
+
+            .product-image {
+                flex: 1;
+                max-width: 40%;
+            }
+
+            .product-info {
+                flex: 1.5;
+                padding: 25px;
+            }
+        }
+
+        .product-image {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .product-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Selectors */
+        .selectors {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .selector {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .selector:last-child {
+            margin-right: 0;
+        }
+
+        .selector-label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .selector-controls {
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 35px;
+        }
+
+        .selector-btn {
+            width: 35px;
+            height: 35px;
+            background-color: #f0f0f0;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .selector-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .selector-value {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Price */
+        .price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin: 15px 0 25px;
+        }
+
+        /* Add to cart button */
+        .add-to-cart {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background-color: #43a047;
+        }
+
+        /* Item details section */
+        .item-details {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-details-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .item-details-list {
+            list-style-type: none;
+        }
+
+        .item-details-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .item-details-item i {
+            color: #4CAF50;
+            margin-right: 10px;
+            margin-top: 4px;
+        }
+
+        /* Related items section */
+        .related-items {
+            margin-bottom: 30px;
+        }
+
+        .related-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .related-card {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .related-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .related-image {
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .related-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .related-content {
+            padding: 12px;
+        }
+
+        .related-title-small {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .related-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .related-price {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .related-rent-period {
+            font-size: 11px;
+            color: #777;
+        }
+
+        .related-add-btn {
+            width: 100%;
+            padding: 6px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .related-add-btn:hover {
+            background-color: #43a047;
+        }
+
+
+        /* Popup Cart Styles */
+        .cart-popup {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            /* Start off-screen */
+            width: 380px;
+            max-width: 90vw;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s ease;
+        }
+
+        .cart-popup.show {
+            right: 0;
+        }
+
+        .cart-popup-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .cart-popup-header h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .cart-popup-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .cart-tab {
+            padding: 5px 10px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .cart-tab.active {
+            border-bottom-color: #4CAF50;
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .close-cart {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .cart-popup-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .cart-empty-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #aaa;
+        }
+
+        .cart-empty-message i {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .cart-popup-item {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .cart-item-details {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .cart-item-remove {
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            align-self: flex-start;
+        }
+
+        .cart-popup-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .cart-subtotal {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .view-cart-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #eee;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .view-cart-btn:hover {
+            background-color: #ddd;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .checkout-btn:hover {
+            background-color: #43a047;
+        }
+
+        /* Make cart icon clickable in all pages */
+        .cart-icon {
+            margin-left: 15px;
+            position: relative;
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* Add overlay when cart is open */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .cart-overlay.show {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .share-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .cart-popup {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .related-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .related-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <div class="header">
+        <button class="back-button" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count">0</span>
+        </div>
+        <button class="share-button">
+            <i class="fas fa-share-alt"></i>
+        </button>
+    </div>
+</head>
+
+<body>
+    <div id="navbar-container"></div>
+    <!-- Popup Cart (add this right before the closing body tag) -->
+    <div class="cart-popup" id="cart-popup">
+        <div class="cart-popup-header">
+            <h3>YOUR CART</h3>
+            <div class="cart-popup-tabs">
+                <button class="cart-tab active" id="rent-popup-tab">Rent</button>
+                <button class="cart-tab" id="fertilizer-popup-tab">Fertilizer</button>
+            </div>
+            <button class="close-cart">&times;</button>
+        </div>
+        <div class="cart-popup-body" id="cart-popup-body">
+            <!-- Cart items will be loaded here -->
+            <div class="cart-empty-message" id="cart-empty-message">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="cart-popup-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal">Rs 0.00</span>
+            </div>
+            <button class="view-cart-btn" onclick="window.location.href='/cart'">View Cart</button>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+    <div class="container">
+        <!-- Header with back button -->
+        <div class="header">
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button class="share-button">
+                <i class="fas fa-share-alt"></i>
+            </button>
+        </div>
+
+        <!-- Product detail section -->
+        <div class="product-detail">
+            <div class="product-image">
+                <img src="" alt="Product" id="product-img">
+            </div>
+            <div class="product-info">
+                <h1 class="product-title" id="product-title">Fertilizer Name</h1>
+                <p class="product-description" id="product-description">
+                    Lorem ipsum dolor sit Amet Consectetur. Nisi Arcu Pellentesque Lacus In Fermentum. Frot Uisim Vestus
+                    Quis Eleifend Quisque Ligula. Ac Dis Sit Aliquet Proin Et Accumsan Torpe Sed Suspendisse Egel Ornare
+                    Ac Orci Risus Eget.
+                </p>
+
+                <div class="selectors">
+                    <div class="selector">
+                        <div class="selector-label">Select Quantity</div>
+                        <div class="selector-controls">
+                            <button class="selector-btn" onclick="decrementQuantity()">−</button>
+                            <div class="selector-value" id="quantity-value">1</div>
+                            <button class="selector-btn" onclick="incrementQuantity()">+</button>
+                        </div>
+                    </div>
+                    <div class="selector">
+                        <div class="selector-label">Select Days</div>
+                        <div class="selector-controls">
+                            <button class="selector-btn" onclick="decrementDays()">−</button>
+                            <div class="selector-value" id="days-value">1</div>
+                            <button class="selector-btn" onclick="incrementDays()">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price" id="product-price">Rs 5000.00</div>
+                <button class="add-to-cart" onclick="addToCart()">Add To Cart</button>
+            </div>
+        </div>
+
+        <!-- Item details section -->
+        <div class="item-details">
+            <h2 class="item-details-title">Item Details</h2>
+            <ul class="item-details-list" id="item-details-list">
+                <li class="item-details-item">
+                    <i class="fas fa-circle"></i>
+                    <span>Lorem Ipsum Dolor Sit Amet Consectetur.</span>
+                </li>
+                <li class="item-details-item">
+                    <i class="fas fa-circle"></i>
+                    <span>Lorem Ipsum Dolor Sit Amet Consectetur.Lorem Ipsum Dolor Sit Amet Consectetur.</span>
+                </li>
+                <li class="item-details-item">
+                    <i class="fas fa-circle"></i>
+                    <span>Lorem Ipsum Dolor Sit Amet Consectetur.Lorem Ipsum Dolor Sit Amet Consectetur.</span>
+                </li>
+                <li class="item-details-item">
+                    <i class="fas fa-circle"></i>
+                    <span>Lorem Ipsum Dolor Sit Amet Consectetur.Lorem Ipsum Dolor Sit Amet Consectetur.</span>
+                </li>
+                <li class="item-details-item">
+                    <i class="fas fa-circle"></i>
+                    <span>Lorem Ipsum Dolor Sit Amet Consectetur.Lorem Ipsum Dolor Sit Amet Consectetur.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Related items section -->
+        <div class="related-items">
+            <h2 class="related-title">Items You May Need</h2>
+            <div class="related-grid" id="related-items-container">
+                <!-- Related items will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+    <div id="footer-container"></div>
+    <script>
+        // Global variables
+        let currentCardId = null;
+        let quantity = 1;
+        let days = 1;
+        let basePrice = 0;
+        let cartItems = [];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the card ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const cardId = urlParams.get('id');
+
+            if (cardId) {
+                currentCardId = cardId;
+                fetchCardDetails(cardId);
+                fetchRelatedCards(cardId);
+            } else {
+                alert('No product ID specified');
+                goBack();
+            }
+
+            // Load cart from localStorage
+            const savedCart = localStorage.getItem('farmlink-harvest-cart');
+            if (savedCart) {
+                try {
+                    cartItems = JSON.parse(savedCart);
+                } catch (e) {
+                    console.error('Error loading cart:', e);
+                }
+            }
+        });
+
+        // Fetch card details
+        function fetchCardDetails(cardId) {
+            fetch(`/getHarvestCardById?id=${cardId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch product details');
+                    }
+                    return response.json();
+                })
+                .then(card => {
+                    displayCardDetails(card);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load product details. Please try again.');
+                });
+        }
+
+        // Fetch related cards (all cards except the current one)
+        function fetchRelatedCards(currentCardId) {
+            fetch('/getHarvestCardsByCategory?category=all')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch related products');
+                    }
+                    return response.json();
+                })
+                .then(cards => {
+                    // Filter out the current card
+                    const relatedCards = cards.filter(card => card.card_id != currentCardId);
+                    displayRelatedCards(relatedCards);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Display card details
+        function displayCardDetails(card) {
+            document.getElementById('product-title').textContent = card.name;
+            document.getElementById('product-description').textContent = card.description;
+
+            // Set the image
+            const imgSrc = card.image || 'https://via.placeholder.com/400x300?text=No+Image';
+            document.getElementById('product-img').src = imgSrc;
+            document.getElementById('product-img').alt = card.name;
+
+            // Set the price
+            basePrice = parseFloat(card.price);
+            updatePrice();
+
+            // Set the initial days value from the card
+            if (card.days) {
+                days = parseInt(card.days);
+                document.getElementById('days-value').textContent = days;
+            }
+
+            // Set item details if available
+            if (card.item_details) {
+                try {
+                    // Try parsing as JSON first
+                    let details;
+                    try {
+                        details = JSON.parse(card.item_details);
+                    } catch {
+                        // If not valid JSON, split by newlines or commas
+                        details = card.item_details.split(/[\\n,]+/);
+                    }
+
+                    if (Array.isArray(details)) {
+                        const detailsList = document.getElementById('item-details-list');
+                        detailsList.innerHTML = '';
+
+                        details.forEach(detail => {
+                            if (detail && detail.trim()) {
+                                const li = document.createElement('li');
+                                li.className = 'item-details-item';
+                                li.innerHTML = `<i class="fas fa-circle"></i><span>${detail.trim()}</span>`;
+                                detailsList.appendChild(li);
+                            }
+                        });
+                    } else {
+                        // Just use the text as is
+                        const detailsList = document.getElementById('item-details-list');
+                        detailsList.innerHTML = `<li class="item-details-item"><i class="fas fa-circle"></i><span>${card.item_details}</span></li>`;
+                    }
+                } catch (e) {
+                    console.error('Error parsing item details:', e);
+                }
+            }
+        }
+
+        // Display related cards
+        function displayRelatedCards(cards) {
+            const container = document.getElementById('related-items-container');
+            container.innerHTML = '';
+
+            // Limit to 4 cards
+            const displayCards = cards.slice(0, 4);
+
+            displayCards.forEach(card => {
+                const imgSrc = card.image || 'https://via.placeholder.com/200x150?text=No+Image';
+
+                const cardElement = document.createElement('div');
+                cardElement.className = 'related-card';
+                cardElement.innerHTML = `
+                    <div class="related-image">
+                        <img src="${imgSrc}" alt="${card.name}" onerror="this.src='https://via.placeholder.com/200x150?text=No+Image'">
+                    </div>
+                    <div class="related-content">
+                        <h3 class="related-title-small">${card.name}</h3>
+                        <div class="related-meta">
+                            <span>${card.category}</span>
+                            <span>${card.days} days</span>
+                        </div>
+                        <div class="related-price">
+                            Rs ${parseFloat(card.price).toFixed(2)}
+                            <span class="related-rent-period">per unit</span>
+                        </div>
+                        <button class="related-add-btn" onclick="addToCartDirect(${card.card_id}, '${card.name.replace(/'/g, "\\'")}', ${card.price})">Add to cart</button>
+                    </div>
+                `;
+
+                // Make the card clickable
+                cardElement.addEventListener('click', function (e) {
+                    // Don't trigger if the button was clicked
+                    if (e.target.tagName !== 'BUTTON') {
+                        window.location.href = `harvest-details.html?id=${card.card_id}`;
+                    }
+                });
+
+                container.appendChild(cardElement);
+            });
+        }
+
+        // Quantity and days controls
+        function incrementQuantity() {
+            quantity++;
+            document.getElementById('quantity-value').textContent = quantity;
+            updatePrice();
+        }
+
+        function decrementQuantity() {
+            if (quantity > 1) {
+                quantity--;
+                document.getElementById('quantity-value').textContent = quantity;
+                updatePrice();
+            }
+        }
+
+        function incrementDays() {
+            days++;
+            document.getElementById('days-value').textContent = days;
+            updatePrice();
+        }
+
+        function decrementDays() {
+            if (days > 1) {
+                days--;
+                document.getElementById('days-value').textContent = days;
+                updatePrice();
+            }
+        }
+
+        // Update price based on quantity and days
+        function updatePrice() {
+            const totalPrice = basePrice * quantity;
+            document.getElementById('product-price').textContent = `Rs ${totalPrice.toFixed(2)}`;
+        }
+
+        // Add to cart function
+        function addToCart() {
+            if (!currentCardId) return;
+
+            fetch(`/getHarvestCardById?id=${currentCardId}`)
+                .then(response => response.json())
+                .then(card => {
+                    // First add to localStorage for client-side functionality
+                    const existingItem = cartItems.find(item => item.id === parseInt(currentCardId));
+
+                    if (existingItem) {
+                        existingItem.quantity += quantity;
+                    } else {
+                        cartItems.push({
+                            id: parseInt(currentCardId),
+                            name: card.name,
+                            price: parseFloat(card.price),
+                            quantity: quantity,
+                            days: days
+                        });
+                    }
+
+                    // Save cart to localStorage
+                    localStorage.setItem('farmlink-harvest-cart', JSON.stringify(cartItems));
+
+                    // Then send to server for database storage
+                    // Generate a simple user ID if none exists
+                    let userId = localStorage.getItem('farmlink-user-id');
+                    if (!userId) {
+                        userId = 'user_' + Date.now();
+                        localStorage.setItem('farmlink-user-id', userId);
+                    }
+
+                    // Send to server (updated endpoint name)
+                    fetch('/addToFertilizerCart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userId: userId,
+                            cardId: currentCardId,
+                            quantity: quantity,
+                            days: days
+                        })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Successfully added to database cart:', data);
+                        })
+                        .catch(error => {
+                            console.error('Error adding to database cart:', error);
+                            // Continue anyway as we have the localStorage backup
+                        });
+
+                    // Show confirmation
+                    alert(`${card.name} added to cart!`);
+
+                    // Optionally update cart count in the header
+                    updateCartCount();
+                })
+                .catch(error => {
+                    console.error('Error adding to cart:', error);
+                    alert('Failed to add item to cart. Please try again.');
+                });
+        }
+
+        // Add to cart directly from related products
+        function addToCartDirect(cardId, name, price) {
+            // Add to localStorage cart
+            const existingItem = cartItems.find(item => item.id === cardId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cartItems.push({
+                    id: cardId,
+                    name: name,
+                    price: parseFloat(price),
+                    quantity: 1,
+                    days: 1 // Default to 1 day
+                });
+            }
+
+            // Save cart to localStorage
+            localStorage.setItem('farmlink-harvest-cart', JSON.stringify(cartItems));
+
+            // Add to database cart
+            let userId = localStorage.getItem('farmlink-user-id');
+            if (!userId) {
+                userId = 'user_' + Date.now();
+                localStorage.setItem('farmlink-user-id', userId);
+            }
+
+            // Updated endpoint name
+            fetch('/addToFertilizerCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    cardId: cardId,
+                    quantity: 1,
+                    days: 1
+                })
+            })
+                .catch(error => console.error('Error adding to database cart:', error));
+
+            // Show confirmation
+            alert(`${name} added to cart!`);
+
+            // Optionally update cart count in the header
+            updateCartCount();
+
+            // Stop event propagation
+            event.stopPropagation();
+        }
+
+        // Function to update cart count in header
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('farmlink-harvest-cart') || '[]');
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.querySelector('.cart-count').textContent = count;
+        }
+
+        // Go back function
+        function goBack() {
+            window.history.back();
+        }
+
+
+        // DOM Elements for cart popup
+        const cartIcon = document.querySelector('.cart-icon');
+        const cartPopup = document.getElementById('cart-popup');
+        const closeCartBtn = document.querySelector('.close-cart');
+        const rentPopupTab = document.getElementById('rent-popup-tab');
+        const fertilizerPopupTab = document.getElementById('fertilizer-popup-tab');
+        const cartPopupBody = document.getElementById('cart-popup-body');
+        const cartEmptyMessage = document.getElementById('cart-empty-message');
+        const cartSubtotal = document.getElementById('cart-subtotal');
+
+        // Create cart overlay element if it doesn't exist
+        if (!document.querySelector('.cart-overlay')) {
+            const cartOverlay = document.createElement('div');
+            cartOverlay.className = 'cart-overlay';
+            document.body.appendChild(cartOverlay);
+        }
+        const cartOverlay = document.querySelector('.cart-overlay');
+
+        // Current cart type (rent or fertilizer)
+        let popupCartType = 'rent';
+
+        // Toggle cart popup
+        function toggleCartPopup() {
+            cartPopup.classList.toggle('show');
+            cartOverlay.classList.toggle('show');
+            if (cartPopup.classList.contains('show')) {
+                loadPopupCart();
+            }
+        }
+
+        // Load cart items into popup
+        function loadPopupCart() {
+            // Get cart items from localStorage
+            const cartItems = popupCartType === 'rent'
+                ? JSON.parse(localStorage.getItem('farmlink-cart') || '[]')
+                : JSON.parse(localStorage.getItem('farmlink-harvest-cart') || '[]');
+
+            // Check if cart is empty
+            if (cartItems.length === 0) {
+                cartEmptyMessage.style.display = 'flex';
+                cartPopupBody.innerHTML = '';
+                cartPopupBody.appendChild(cartEmptyMessage);
+                cartSubtotal.textContent = 'Rs 0.00';
+                return;
+            }
+
+            // Hide empty message and prepare container
+            cartEmptyMessage.style.display = 'none';
+            cartPopupBody.innerHTML = '';
+
+            // Calculate subtotal
+            let subtotal = 0;
+
+            // Display items and calculate subtotal
+            cartItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-popup-item';
+
+                // Calculate item total
+                const itemTotal = parseFloat(item.price) * item.quantity;
+                subtotal += itemTotal;
+
+                // Build item HTML with available information
+                itemElement.innerHTML = `
+            <div class="cart-item-info">
+                <div class="cart-item-title">${item.name}</div>
+                <div class="cart-item-details">
+                    <span>Qty: ${item.quantity}</span>
+                    <span>Days: ${item.days || 1}</span>
+                </div>
+                <div class="cart-item-price">Rs ${itemTotal.toFixed(2)}</div>
+            </div>
+            <div class="cart-item-remove" onclick="removeFromPopupCart(${item.id})">
+                <i class="fas fa-times"></i>
+            </div>
+        `;
+
+                // Add to the popup
+                cartPopupBody.appendChild(itemElement);
+            });
+
+            // Update subtotal
+            cartSubtotal.textContent = `Rs ${subtotal.toFixed(2)}`;
+        }
+
+        // Remove item from popup cart
+        function removeFromPopupCart(itemId) {
+            // Get cart items
+            const storageKey = popupCartType === 'rent' ? 'farmlink-cart' : 'farmlink-harvest-cart';
+            let cartItems = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+            // Remove the item
+            cartItems = cartItems.filter(item => item.id !== itemId);
+
+            // Save updated cart
+            localStorage.setItem(storageKey, JSON.stringify(cartItems));
+
+            // Reload cart to show updated items
+            loadPopupCart();
+
+            // Update cart count in header
+            updateCartCount();
+        }
+
+        // Switch cart type in popup
+        function switchPopupCartType(type) {
+            popupCartType = type;
+
+            // Update active tab
+            if (type === 'rent') {
+                rentPopupTab.classList.add('active');
+                fertilizerPopupTab.classList.remove('active');
+            } else {
+                rentPopupTab.classList.remove('active');
+                fertilizerPopupTab.classList.add('active');
+            }
+
+            // Reload cart with new type
+            loadPopupCart();
+        }
+
+        // Set up event listeners for cart popup
+        cartIcon.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleCartPopup();
+        });
+
+        // Close cart popup when close button is clicked
+        closeCartBtn.addEventListener('click', function () {
+            cartPopup.classList.remove('show');
+            cartOverlay.classList.remove('show');
+        });
+
+        // Close cart popup when clicking outside
+        cartOverlay.addEventListener('click', function () {
+            cartPopup.classList.remove('show');
+            cartOverlay.classList.remove('show');
+        });
+
+        // Switch between rent and fertilizer carts
+        rentPopupTab.addEventListener('click', function () {
+            switchPopupCartType('rent');
+        });
+
+        fertilizerPopupTab.addEventListener('click', function () {
+            switchPopupCartType('fertilizer');
+        });
+
+        // Update cart count initially
+        updateCartCount();
+    </script>
+</body>
+
+</html>
