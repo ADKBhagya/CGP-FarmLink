@@ -1,241 +1,433 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/frontend/css/meetings/meeting.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <title>Meeting</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FarmLink | Meetings</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/meetings/meetings.css" />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
-</head>
-<body>
-</head>
-<body>
-<header>
-    <nav class="navbar">
-        <div class="logo">Farm <span>Link</span></div>
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Harvest</a></li>
-            <li><a href="#">Meetings</a></li>
-            <li><a href="#">Profile</a></li>
-        </ul>
-        <button class="register-btn">Register</button>
-    </nav>
-  
-    </header>
+
+<!-- Navbar -->
+
+<nav class="navbar navbar-expand-lg">
     <div class="container">
-        <div class="left-section">
-            <div class="meeting-cards">
-                <div class="meeting-cards">
-                    <div class="card custom-card" style="width: 100px; border-radius: 10px; overflow: hidden; border: 2px solid #ccc; margin: 10px;">
-                        <img src="/frontend/assets/meetings/staff meeting.png" alt="Cover" style="width: 100%; height: 75px; object-fit: cover; border: 3px solid #4CAF50; border-radius: 10px;">
-                        <h5 class="card-title">Meetings <a href="/frontend/html/meetings/staff-meeting1.html" class="btn btn-primary">></a></h5>
-                        <div style="padding: 10px; text-align: center; font-weight: bold;">
-                          
-                        </div>
-                      </div>
-                      
-                      
-                          
-                      <div class="card custom-card" style="width: 100px; border-radius: 10px; overflow: hidden; border: 2px solid #ccc; margin: 10px;">
-                        <img src="/frontend/assets/meetings/staff meeting-2.png" alt="Cover" style="width: 100%; height: 75px; object-fit: cover; border: 3px solid #4CAF50; border-radius: 10px;">
-                        <h5 class="card-title"> Meetings <a href="/frontend/html/meetings/staff-meeting2.html" class="btn btn-primary">></a></h5>
-                        <div style="padding: 10px; text-align: center; font-weight: bold;">
-                          
-                        </div>
-                      </div>
-                      <div class="card custom-card" style="width: 100px; border-radius: 10px; overflow: hidden; border: 2px solid #ccc; margin: 10px;">
-                        <img src="/frontend/assets/meetings/farmer.png" alt="Cover" style="width: 100%; height: 75px; object-fit: cover; border: 3px solid #4CAF50; border-radius: 10px;">
-                        <h5 class="card-title">Meetings <a href="/frontend/html/meetings/farmer-meeting.html" class="btn btn-primary">></a></h5>
-                        <div style="padding: 10px; text-align: center; font-weight: bold;">
-                          
-                        </div>
-                      </div>
-                      
-               </div>
-               </div>
-    <div class="large-card">
-    <h2>Upcoming Event -Farmers Meeting 2025 </h2>
-    <p>
-        This is a special gathering of farmers to discuss agricultural advancements, 
-        sustainable farming methods, and modern technologies. Experts will share insights 
-        on organic farming, irrigation methods, and new government policies. 
-    </p>
-    <p>
-        📅 <b>Date:May 29, 2025<br></b> 
-        ⏰ <b>Time:10:00 AM - 3:00 PM<br></b>
-        📍 <b>Location: Rural Development Center, Kalawana</b>
-    </p>
-    <p>
-        Farmers will get hands-on training on the latest machinery and participate in 
-        interactive workshops to enhance productivity. Don't miss this opportunity 
-        to network with other farmers and industry leaders!
-    </p>
-</div>
-</div>
-<div class="Right-corner">
-    <div class="schedule-section">
-        <div class="schedule-container">
-            <button class="schedule-btn" id="scheduleMeetingBtn">Schedule Meeting</button>
+        <a class="navbar-brand" href="#">Farm<span class="text-success">Link</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Harvest</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Meetings</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <div class="dropdown d-inline-block">
+                    <button class="btn btn-success dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-2"></i>
+                        <span>Get Started</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end animate slideIn">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="fas fa-user-shield me-2"></i> Admin Portal
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="fas fa-user-tie me-2"></i> Staff Portal
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="fas fa-tractor me-2"></i> Farmer Portal
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="fas fa-shopping-cart me-2"></i> Buyer Portal
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown d-inline-block ms-2">
+                    <button class="btn btn-outline-success dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-plus me-2"></i>
+                        <span>Join Us</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end animate slideIn">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="fas fa-user-shield me-2"></i> Join as Admin
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="fas fa-user-tie me-2"></i> Join as Staff
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="fas fa-tractor me-2"></i> Join as Farmer
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="fas fa-shopping-cart me-2"></i> Join as Buyer
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
+    </div>
+</nav>
 
-        <div class="calendar">
-            <div class="calendar-header">
-                <span class="month-picker" id="month-picker">February</span>
-                <div class="year-picker">
-                    <span class="year-change" id="prev-year">
-                        <pre><</pre>
-                    </span>
-                    <span id="year">2021</span>
-                    <span class="year-change" id="next-year">
-                        <pre>></pre>
-                    </span>
-                </div>
-            </div>
-            <div class="calendar-body">
-                <div class="calendar-week-day">
-                    <div>Sun</div>
-                    <div>Mon</div>
-                    <div>Tue</div>
-                    <div>Wed</div>
-                    <div>Thu</div>
-                    <div>Fri</div>
-                    <div>Sat</div>
-                </div>
-                <div class="calendar-days"></div>
-            </div>
-            
-            <div class="month-list"></div>
-        </div>
+
+<!-- Main Content -->
+
+<div class="M-dashboard-container">
+  <main class="M-main-content">
+    <div class="M-header">
+      <h1>Meetings</h1>
+      <button class="M-add-meeting-btn" onclick="M_openModal()">+ Schedule Meeting</button>
+    </div>
+
+<div class="M-dashboard-split">
+  <div class="M-meetings-column">
+    <section class="M-section-block">
+      <h2>Today's Schedule</h2>
+      <div class="M-meeting-grid" id="M-today-meetings"></div>
+    </section>
+
+    <section class="M-section-block">
+      <h2>Upcoming Meetings</h2>
+      <div class="M-meeting-grid" id="M-upcoming-meetings"></div>
+    </section>
+  </div>
+
+  <div class="M-info-panel">
     
-        
-    
-<footer class="footer">
-                                                                     
-        <div class="footer-left">
-            <div class="logo">Farm <span>Link</span></div>
-            <p>&copy; 2025 copyright @FarmLink</p>
-        </div>
-        <div class="footer-center">
-            <a href="#">Terms of Service</a> | 
-            <a href="#">Privacy Policy</a> | 
-            <a href="#">Cookies</a>
-        </div>
-        <div class="footer-right">
-            <p> 
-                <div class="mail">Contact Us: FarmLink@email.com</div>
-            </p>
-            <div class="footer-social">
-                <a href="#" class="social-icon"><i class="fa fa-phone"></i></a>
-                <a href="#" class="social-icon"><i class="fas fa-comment-dots"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                
-            </div> 
-        </div>
-    
+    <div class="M-stats-grid">
+      <div class="M-stat-card"><p>Total Meetings</p><h2 id="M-total">0</h2></div>
+      <div class="M-stat-card green"><p>Farmers</p><h2 id="M-farmer">0</h2></div>
+      <div class="M-stat-card blue"><p>Staff</p><h2 id="M-staff">0</h2></div>
+      <div class="M-stat-card orange"><p>Avg / Week</p><h2>2.3</h2></div>
+    </div>
+  </div>
+</div>
+
+<!-- Calendar -->
+<div class="M-calendar-wrapper">
+  <h2>Meeting Calendar</h2>
+  <div class="M-calendar-box" id="meetingCalendar"></div>
+</div>
+
+
+  </main>
+</div>
+
+<!-- Create Meeting Modal -->
+
+<div id="M-createMeetingModal" class="M-modal-overlay">
+  <div class="M-modal-content">
+    <div class="M-modal-header">
+      <h3>Schedule New Meeting</h3>
+      <button onclick="M_closeModal()" class="M-close-btn">&times;</button>
+    </div>
+    <form id="M-createMeetingForm" class="M-meeting-form">
+      <div class="M-form-group"><label>Title</label><input id="M-title" type="text" required></div>
+      <div class="M-form-group"><label>Date</label><input id="M-date" type="date" required></div>
+      <div class="M-form-group"><label>Start Time</label><input id="M-startTime" type="time" required></div>
+      <div class="M-form-group"><label>End Time</label><input id="M-endTime" type="time" required></div>
+      <div class="M-form-group"><label>Location</label><input id="M-location" type="text" required></div>
+      <div class="M-form-group">
+        <label>Category</label>
+        <select id="M-category" required>
+          <option value="">Select</option>
+          <option value="Staff">Staff</option>
+          <option value="Farmer">Farmer</option>
+        </select>
+      </div>
+      <div class="M-form-actions">
+        <button type="submit" class="M-btn-green">Create</button>
+        <button type="button" class="M-btn-cancel" onclick="M_closeModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Footer -->
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-brand"><h3>Farm<span>Link</span></h3></div>
+      <div class="footer-contact"><p>Contact Us</p><a href="mailto:FarmLink@gmail.com">FarmLink@gmail.com</a></div>
+      <div class="footer-social">
+        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </div>
 </footer>
-<script>
 
-function openMeetingPage(pageUrl) {
-    window.open(pageUrl, '_blank'); // Opens in a new tab
-  }
-  document.getElementById("scheduleMeetingBtn").addEventListener("click", function() {
-    window.location.href = "/frontend/html/meetings/calendar(1).html";
-  });
+<!-- Scripts -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+<script>
+    const BASE_URL = "http://localhost:5000";
   
-  let calendar = document.querySelector('.calendar')
+    function M_openModal() {
+      document.getElementById("M-createMeetingModal").classList.add("active");
+    }
   
-  const month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    function M_closeModal() {
+      document.getElementById("M-createMeetingModal").classList.remove("active");
+    }
   
-  isLeapYear = (year) => {
-    return (year % 4 === 0 && year % 100 !== 0 && year % 400 !== 0) || (year % 100 === 0 && year % 400 ===0)
-  }
+    function formatTime(t) {
+      const [h, m] = t.split(":");
+      const hour = parseInt(h, 10);
+      const ampm = hour >= 12 ? "PM" : "AM";
+      return `${(hour % 12 || 12).toString().padStart(2, "0")}:${m} ${ampm}`;
+    }
   
-  getFebDays = (year) => {
-    return isLeapYear(year) ? 29 : 28
-  }
+    function toLocalDateTime(dateStr, timeStr) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const [hour, minute] = timeStr.split(':').map(Number);
+      return new Date(year, month - 1, day, hour, minute);
+    }
   
-  generateCalendar = (month, year) => {
+    async function loadMeetingCards() {
+      try {
+        const res = await fetch(`${BASE_URL}/api/meetings`);
+        const meetings = await res.json();
   
-    let calendar_days = calendar.querySelector('.calendar-days')
-    let calendar_header_year = calendar.querySelector('#year')
+        const now = new Date();
+        const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+        const roundedNow = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
   
-    let days_of_month = [31, getFebDays(year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
   
-    calendar_days.innerHTML = ''
+        const todayContainer = document.getElementById("M-today-meetings");
+        const upcomingContainer = document.getElementById("M-upcoming-meetings");
+        const totalCounter = document.getElementById("M-total");
+        const farmerCounter = document.getElementById("M-farmer");
+        const staffCounter = document.getElementById("M-staff");
   
-    let currDate = new Date()
-    if (!month) month = currDate.getMonth()
-    if (!year) year = currDate.getFullYear()
+        todayContainer.innerHTML = "";
+        upcomingContainer.innerHTML = "";
   
-    let curr_month = `${month_names[month]}`
-    month_picker.innerHTML = curr_month
-    calendar_header_year.innerHTML = year
+        let total = 0, farmer = 0, staff = 0;
+        let nextMeetingSoon = null;
   
-    // get first day of month
-    
-    let first_day = new Date(year, month, 1)
-  
-    for (let i = 0; i <= days_of_month[month] + first_day.getDay() - 1; i++) {
-        let day = document.createElement('div')
-        if (i >= first_day.getDay()) {
-            day.classList.add('calendar-day-hover')
-            day.innerHTML = i - first_day.getDay() + 1
-            day.innerHTML += `<span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>`
-            if (i - first_day.getDay() + 1 === currDate.getDate() && year === currDate.getFullYear() && month === currDate.getMonth()) {
-                day.classList.add('curr-date')
+        meetings.forEach(m => {
+        const meetingDate = new Date(m.date);
+        meetingDate.setHours(0, 0, 0, 0);
+
+        const meetingStart = toLocalDateTime(m.date, m.start_time);
+        const meetingEnd = toLocalDateTime(m.date, m.end_time);
+
+        // ✅ Filter out expired meetings
+        if (meetingEnd < now) return;
+
+        // ✅ Detect upcoming/ongoing meeting
+        if (
+            (meetingStart <= roundedNow && meetingEnd > roundedNow) ||
+            (meetingStart > roundedNow && meetingStart <= oneHourLater)
+        ) {
+            if (!nextMeetingSoon || meetingStart < nextMeetingSoon) {
+            nextMeetingSoon = meetingStart;
             }
         }
-        calendar_days.appendChild(day)
-    }
-  }
-  
-  let month_list = calendar.querySelector('.month-list')
-  
-  month_names.forEach((e, index) => {
-    let month = document.createElement('div')
-    month.innerHTML = `<div data-month="${index}">${e}</div>`
-    month.querySelector('div').onclick = () => {
-        month_list.classList.remove('show')
-        curr_month.value = index
-        generateCalendar(index, curr_year.value)
-    }
-    month_list.appendChild(month)
-  })
-  
-  let month_picker = calendar.querySelector('#month-picker')
-  
-  month_picker.onclick = () => {
-    month_list.classList.add('show')
-  }
-  
-  let currDate = new Date()
-  
-  let curr_month = {value: currDate.getMonth()}
-  let curr_year = {value: currDate.getFullYear()}
-  
-  generateCalendar(curr_month.value, curr_year.value)
-  
-  document.querySelector('#prev-year').onclick = () => {
-    --curr_year.value
-    generateCalendar(curr_month.value, curr_year.value)
-  }
-  
-  document.querySelector('#next-year').onclick = () => {
-    ++curr_year.value
-    generateCalendar(curr_month.value, curr_year.value)
-  }
-  
-  
-  </script>
 
+        total++;
+        if (m.category === "Farmer") farmer++;
+        if (m.category === "Staff") staff++;
+
+        const isToday = meetingDate.getTime() === today.getTime();
+        const isUpcoming = meetingDate.getTime() > today.getTime();
+
+        const formattedDate = meetingDate.toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+
+        const card = document.createElement("div");
+        card.className = `M-meeting-card ${m.category === "Staff" ? "blue" : "green"}`;
+        card.innerHTML = `
+            <div class="M-meta">
+            <span>${isToday
+                ? `${formatTime(m.start_time)} – ${formatTime(m.end_time)}`
+                : `${formattedDate} | ${formatTime(m.start_time)}`}</span>
+            <span class="M-badge">${m.category}</span>
+            </div>
+            <h3>${m.title}</h3>
+            <p>${m.location}</p>
+        `;
+
+        if (isToday) {
+            todayContainer.appendChild(card);
+        } else if (isUpcoming) {
+            upcomingContainer.appendChild(card);
+        }
+        });
+
+  
+        totalCounter.textContent = total;
+        farmerCounter.textContent = farmer;
+        staffCounter.textContent = staff;
+  
+        // ✅ ALERT UI
+        const alertBox = document.querySelector('.M-alert-box');
+        if (nextMeetingSoon) {
+          const diff = Math.round((nextMeetingSoon - now) / 60000);
+          alertBox.innerHTML = `🔔 Next meeting starts in ${diff} mins!`;
+          alertBox.style.backgroundColor = '#ffe0e0';
+          alertBox.style.borderLeft = '6px solid #e53935';
+          alertBox.style.color = '#a30000';
+        } else {
+          alertBox.innerHTML = `✅ No meetings in the next hour.`;
+          alertBox.style.backgroundColor = '#e0ffe6';
+          alertBox.style.borderLeft = '6px solid #31A74F';
+          alertBox.style.color = '#146c43';
+        }
+  
+      } catch (err) {
+        console.error("❌ Error loading meetings:", err);
+      }
+    }
+  
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('meetingCalendar');
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        height: 500,
+        events: async function (fetchInfo, successCallback, failureCallback) {
+          try {
+            const res = await fetch(`${BASE_URL}/api/meetings`);
+            const data = await res.json();
+  
+            const formatted = data.map(event => {
+              const startParts = event.start_time.split(':');
+              const endParts = event.end_time.split(':');
+  
+              const start = new Date(event.date);
+              start.setHours(parseInt(startParts[0]), parseInt(startParts[1]));
+  
+              const end = new Date(event.date);
+              end.setHours(parseInt(endParts[0]), parseInt(endParts[1]));
+  
+              return {
+                title: event.title,
+                start: start.toISOString(),
+                end: end.toISOString(),
+                color: event.category === 'Staff' ? '#4A90E2' : '#31A74F',
+                extendedProps: {
+                  location: event.location,
+                  category: event.category
+                }
+              };
+            });
+  
+            successCallback(formatted);
+          } catch (err) {
+            console.error('❌ Failed to fetch calendar events:', err);
+            failureCallback(err);
+          }
+        },
+        eventClick: function (info) {
+          document.querySelector(".fc-custom-popup")?.remove();
+          const rect = info.el.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+  
+          const popup = document.createElement("div");
+          popup.className = "fc-custom-popup";
+          popup.innerHTML = `
+            <strong>${info.event.title}</strong><br/>
+            <b>Category:</b> ${info.event.extendedProps.category}<br/>
+            <b>Location:</b> ${info.event.extendedProps.location}<br/>
+            <b>Date:</b> ${new Date(info.event.start).toLocaleDateString()}<br/>
+            <b>Time:</b> ${new Date(info.event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – ${new Date(info.event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          `;
+  
+          popup.style.position = "absolute";
+          popup.style.left = `${rect.left + scrollLeft + rect.width + 10}px`;
+          popup.style.top = `${rect.top + scrollTop}px`;
+          popup.style.background = "#fff";
+          popup.style.border = "1px solid #ddd";
+          popup.style.borderRadius = "10px";
+          popup.style.padding = "12px";
+          popup.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+          popup.style.zIndex = 9999;
+  
+          document.body.appendChild(popup);
+        }
+      });
+  
+      calendar.render();
+      loadMeetingCards();
+  
+      document.getElementById("M-createMeetingForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const data = {
+          title: document.getElementById("M-title").value,
+          category: document.getElementById("M-category").value,
+          location: document.getElementById("M-location").value,
+          date: document.getElementById("M-date").value,
+          start_time: document.getElementById("M-startTime").value,
+          end_time: document.getElementById("M-endTime").value
+        };
+  
+        try {
+          const res = await fetch(`${BASE_URL}/api/meetings`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
+  
+          const result = await res.json();
+          if (res.ok) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Meeting Created',
+                text: 'Your meeting has been successfully scheduled.',
+                confirmButtonColor: '#31A74F'
+            });
+            document.getElementById("M-createMeetingForm").reset();
+            M_closeModal();
+            calendar.refetchEvents();
+            loadMeetingCards();
+            }
+
+        } catch (err) {
+          console.error("❌ Error creating meeting:", err);
+          alert("❌ Failed to create meeting.");
+        }
+      });
+  
+      setInterval(loadMeetingCards, 60000); // Auto-refresh alert every 1 minute
+    });
+  </script>
+  
 </body>
 </html>

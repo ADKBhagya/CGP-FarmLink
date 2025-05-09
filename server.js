@@ -4,6 +4,8 @@ require("dotenv").config();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs'); 
+const bodyParser = require('body-parser');
+
 const db = require("./backend/db");
 
 // Route Imports (Avoid redeclaration!)
@@ -17,10 +19,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
     
-
-
-
-
 // Root Route
 app.get("/", (req, res) => {
   res.send("FarmLink Backend is Running! 🚀");
@@ -57,9 +55,11 @@ app.get("/api/harvest/getHarvest", (req, res) => {
   });
 });
 
+//Meetings section
+const meetingRoutes = require("./backend/routes/meetings");
 
-
-
+// Meetings Details API
+app.use('/api/meetings', meetingRoutes);
 
 
 
