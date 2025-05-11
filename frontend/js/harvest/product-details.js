@@ -20,19 +20,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
     
+    console.log('Product Details page loaded');
+    console.log('Current URL:', window.location.href);
+    console.log('Product ID:', productId);
+    
     if (productId) {
         fetchProductDetails(productId);
         fetchAllProducts();
     } else {
-        // Redirect to harvest page if no ID
-        window.location.href = 'harvest.html';
+        // Display error message instead of redirecting immediately
+        console.error('No product ID provided in URL');
+        
+        // Show error message on the page
+        const container = document.querySelector('.product-details-container');
+        if (container) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 50px;">
+                    <h2>Error: No Product Selected</h2>
+                    <p>Please select a product from the shop page to view its details.</p>
+                    <p>Current URL: ${window.location.href}</p>
+                    <a href="harvest.html" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Back to Shop</a>
+                </div>
+            `;
+        }
+        
+        // Optionally redirect after delay (comment out for testing)
+        // setTimeout(() => {
+        //     window.location.href = 'harvest.html';
+        // }, 3000);
+        
+        return; // Exit early
     }
     
     // Setup quantity controls
     setupQuantityControls();
     
     // Add to cart button
-    addToCartBtn.addEventListener('click', addToCart);
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', addToCart);
+    }
     
     // Load cart from storage and update count
     loadCartFromStorage();
@@ -43,53 +69,70 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupQuantityControls() {
     // Create quantity control elements
     const quantitySelect = document.querySelector('.quantity-select');
-    quantitySelect.innerHTML = `
-        <label>Select Quantity</label>
-        <div class="quantity-controls">
-            <button id="decrease-quantity" class="quantity-control-btn">-</button>
-            <span id="quantity-value" class="quantity-value">1</span>
-            <button id="increase-quantity" class="quantity-control-btn">+</button>
-        </div>
-    `;
-    
-    // Get the new elements
-    const decreaseBtn = document.getElementById('decrease-quantity');
-    const increaseBtn = document.getElementById('increase-quantity');
-    const quantityValue = document.getElementById('quantity-value');
-    
-    // Add event listeners
-    decreaseBtn.addEventListener('click', () => {
-        if (selectedQuantity > 1) {
-            selectedQuantity--;
-            quantityValue.textContent = selectedQuantity;
+    if (quantitySelect) {
+        quantitySelect.innerHTML = `
+            <label>Select Quantity</label>
+            <div class="quantity-controls">
+                <button id="decrease-quantity" class="quantity-control-btn">-</button>
+                <span id="quantity-value" class="quantity-value">1</span>
+                <button id="increase-quantity" class="quantity-control-btn">+</button>
+            </div>
+        `;
+        
+        // Get the new elements
+        const decreaseBtn = document.getElementById('decrease-quantity');
+        const increaseBtn = document.getElementById('increase-quantity');
+        const quantityValue = document.getElementById('quantity-value');
+        
+        // Add event listeners
+        if (decreaseBtn) {
+            decreaseBtn.addEventListener('click', () => {
+                if (selectedQuantity > 1) {
+                    selectedQuantity--;
+                    quantityValue.textContent = selectedQuantity;
+                }
+            });
         }
-    });
-    
-    increaseBtn.addEventListener('click', () => {
-        // You might want to add a max quantity check based on stock
-        selectedQuantity++;
-        quantityValue.textContent = selectedQuantity;
-    });
+        
+        if (increaseBtn) {
+            increaseBtn.addEventListener('click', () => {
+                // You might want to add a max quantity check based on stock
+                selectedQuantity++;
+                quantityValue.textContent = selectedQuantity;
+            });
+        }
+    }
 }
 
 // Functions
 async function fetchProductDetails(productId) {
     try {
+        console.log(`Fetching product details for ID: ${productId}`);
         const response = await fetch(`http://localhost:5000/api/products/${productId}`);
+        
         if (!response.ok) {
-            throw new Error('Failed to fetch product');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const product = await response.json();
+        console.log('Product details received:', product);
         currentProduct = product;
         displayProductDetails(product);
     } catch (error) {
         console.error('Error fetching product details:', error);
-        alert('Error loading product details. Please try again.');
-        // Redirect back to harvest page on error
-        setTimeout(() => {
-            window.location.href = 'harvest.html';
-        }, 2000);
+        alert(`Error loading product details: ${error.message}`);
+        
+        // Show error on page
+        const container = document.querySelector('.product-details-container');
+        if (container) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 50px;">
+                    <h2>Error Loading Product</h2>
+                    <p>Unable to load product details. Error: ${error.message}</p>
+                    <a href="harvest.html" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Back to Shop</a>
+                </div>
+            `;
+        }
     }
 }
 
@@ -104,17 +147,21 @@ async function fetchAllProducts() {
         allProducts = products;
         
         // Display recommended products excluding current product
-        const recommendedProducts = products.filter(product => 
-            product.card_id !== currentProduct.card_id
-        );
-        
-        displayRecommendedProducts(recommendedProducts);
+        if (currentProduct) {
+            const recommendedProducts = products.filter(product => 
+                product.card_id !== currentProduct.card_id
+            );
+            
+            displayRecommendedProducts(recommendedProducts);
+        }
     } catch (error) {
         console.error('Error fetching all products:', error);
     }
 }
 
 function displayProductDetails(product) {
+    console.log('Displaying product details:', product);
+    
     // Update product image
     if (product.image && typeof product.image === 'string' && product.image.startsWith('data:image')) {
         productImage.src = product.image;
@@ -235,16 +282,19 @@ function createRecommendedProductCard(product) {
         // Don't navigate if clicking the add to cart button
         if (!e.target.classList.contains('recommended-add-to-cart')) {
             // Use relative path
+            console.log(`Navigating to product ${product.card_id}`);
             window.location.href = `product-details.html?id=${product.card_id}`;
         }
     });
     
     // Add event listener to add to cart button
     const addToCartButton = card.querySelector('.recommended-add-to-cart');
-    addToCartButton.addEventListener('click', function(e) {
-        e.stopPropagation(); // Prevent card click
-        addProductToCart(product);
-    });
+    if (addToCartButton) {
+        addToCartButton.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent card click
+            addProductToCart(product);
+        });
+    }
     
     return card;
 }
@@ -265,7 +315,9 @@ function saveCartToStorage(cart) {
 function updateCartCount() {
     const cart = loadCartFromStorage();
     const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    cartCount.textContent = totalItems;
+    if (cartCount) {
+        cartCount.textContent = totalItems;
+    }
 }
 
 function addToCart() {
@@ -302,4 +354,4 @@ function addProductToCart(product, quantity = 1) {
     
     // Show success message
     alert('Product added to cart successfully!');
-};
+}

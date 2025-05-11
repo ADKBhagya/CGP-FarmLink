@@ -14,6 +14,9 @@ let allProducts = []; // Store all products for filtering
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Harvest page loaded');
+    console.log('Current URL:', window.location.href);
+    
     fetchProducts();
     loadCartFromStorage();
     updateCartCount();
@@ -81,8 +84,10 @@ function closeModal() {
 
 async function fetchProducts() {
     try {
+        console.log('Fetching products...');
         const response = await fetch('http://localhost:5000/api/products');
         const products = await response.json();
+        console.log('Products fetched:', products.length);
         allProducts = products; // Store for filtering
         displayProducts(products);
     } catch (error) {
@@ -130,6 +135,10 @@ function displayProducts(products) {
         productCard.addEventListener('click', function(e) {
             // Don't navigate if clicking on the button
             if (!e.target.closest('.product-buttons') && !e.target.closest('button')) {
+                console.log('Card clicked, navigating to product:', product.card_id);
+                console.log('Current location:', window.location.href);
+                console.log('Target URL:', `product-details.html?id=${product.card_id}`);
+                
                 // For Live Server, use relative paths
                 window.location.href = `product-details.html?id=${product.card_id}`;
             }
@@ -144,16 +153,28 @@ function displayProducts(products) {
 
 // Event listener function for cart buttons
 function attachCardEventListeners() {
-    // Event delegation for add to cart buttons
-    const productGrid = document.getElementById('productGrid');
+    // Remove existing event listener to prevent duplicates
+    const existingHandler = window.handleAddToCart;
+    if (existingHandler) {
+        productGrid.removeEventListener('click', existingHandler);
+    }
+    
+    // Create new handler
+    const handleAddToCart = function(event) {
+        if (event.target.classList.contains('add-to-cart')) {
+            event.stopPropagation(); // Prevent card click
+            const productId = event.target.getAttribute('data-id');
+            console.log('Add to cart clicked for product:', productId);
+            addToCart(productId);
+        }
+    };
+    
+    // Store reference to handler
+    window.handleAddToCart = handleAddToCart;
+    
+    // Add event listener
     if (productGrid) {
-        productGrid.addEventListener('click', function(event) {
-            if (event.target.classList.contains('add-to-cart')) {
-                event.stopPropagation(); // Prevent card click
-                const productId = event.target.getAttribute('data-id');
-                addToCart(productId);
-            }
-        });
+        productGrid.addEventListener('click', handleAddToCart);
     }
 }
 
