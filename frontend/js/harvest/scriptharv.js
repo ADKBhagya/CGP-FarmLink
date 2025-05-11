@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
         openFormBtn.addEventListener('click', openModal);
     }
     
-    closeBtn.addEventListener('click', closeModal);
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
     
     window.addEventListener('click', function(event) {
         if (event.target === productFormModal) {
@@ -30,7 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    productForm.addEventListener('submit', handleFormSubmit);
+    if (productForm) {
+        productForm.addEventListener('submit', handleFormSubmit);
+    }
     
     // Search functionality
     if (searchHeader) {
@@ -63,12 +67,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Functions
 function openModal() {
-    productFormModal.style.display = 'block';
-    productForm.reset();
+    if (productFormModal) {
+        productFormModal.style.display = 'block';
+        productForm.reset();
+    }
 }
 
 function closeModal() {
-    productFormModal.style.display = 'none';
+    if (productFormModal) {
+        productFormModal.style.display = 'none';
+    }
 }
 
 async function fetchProducts() {
@@ -83,7 +91,14 @@ async function fetchProducts() {
     }
 }
 
+// Single displayProducts function
 function displayProducts(products) {
+    const productGrid = document.getElementById('productGrid');
+    if (!productGrid) {
+        console.error('Product grid element not found');
+        return;
+    }
+    
     productGrid.innerHTML = '';
     
     if (products.length === 0) {
@@ -93,22 +108,6 @@ function displayProducts(products) {
         productGrid.appendChild(noProductsMessage);
         return;
     }
-    
-    products.forEach(product => {
-        const card = createProductCard(product);
-        productGrid.appendChild(card);
-    });
-}
-
-// Update the display function to make cards clickable
-function displayProducts(products) {
-    const productGrid = document.getElementById('productGrid');
-    if (!productGrid) {
-        console.error('Product grid element not found');
-        return;
-    }
-    
-    productGrid.innerHTML = '';
 
     products.forEach(product => {
         const productCard = document.createElement('div');
@@ -142,7 +141,7 @@ function displayProducts(products) {
     attachCardEventListeners();
 }
 
-// Update event listener function to handle both navigation and cart functionality
+// Event listener function for cart buttons
 function attachCardEventListeners() {
     // Event delegation for add to cart buttons
     const productGrid = document.getElementById('productGrid');
@@ -157,182 +156,32 @@ function attachCardEventListeners() {
     }
 }
 
-// Add to cart function (implement based on your cart logic)
+// Single addToCart function
 function addToCart(productId) {
     // Find the product in allProducts array
     const product = allProducts.find(p => p.card_id == productId);
     if (product) {
-        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        
         // Check if product already exists in cart
-        const existingItem = cart.find(item => item.card_id == productId);
+        const existingItemIndex = cartItems.findIndex(item => item.card_id == productId);
         
-        if (existingItem) {
-            existingItem.quantity += 1;
+        if (existingItemIndex !== -1) {
+            // Product already in cart, increase quantity
+            cartItems[existingItemIndex].quantity += 1;
         } else {
-            cart.push({
+            // Add new product to cart
+            cartItems.push({
                 ...product,
                 quantity: 1
             });
         }
         
-        localStorage.setItem('cart', JSON.stringify(cart));
+        // Save cart to localStorage
+        saveCartToStorage();
+        // Update cart count
         updateCartCount();
+        
         alert('Product added to cart!');
     }
-}
-
-// Update cart count in header
-function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    
-    const cartCountElement = document.querySelector('.cart-count');
-    if (cartCountElement) {
-        cartCountElement.textContent = totalItems;
-    }
-}
-
-// Load cart from storage
-function loadCartFromStorage() {
-    updateCartCount();
-}
-
-// CSS for hover effect (add to your CSS file)
-const additionalStyles = `
-.product-card {
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.product-buttons {
-    position: relative;
-    z-index: 1;
-    margin-top: 10px;
-}
-
-.add-to-cart {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-    font-weight: bold;
-    transition: background-color 0.2s;
-}
-
-.add-to-cart:hover {
-    background-color: #45a049;
-}
-`;
-
-function createProductCard(product) {
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    
-    // Use card_id consistently (not cart_id)
-    card.setAttribute('data-id', product.card_id);
-    card.setAttribute('data-name', product.name);
-    card.setAttribute('data-price', product.price);
-    card.setAttribute('data-category', product.category || '');
-    
-    // Format the price
-    const formattedPrice = `Rs ${parseFloat(product.price).toFixed(2)}`;
-    
-    // Create star rating
-    const rating = product.rating || 4.8; // Use rating from database if available
-    const starsHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>';
-    
-    // Create image URL from blob or use image URL directly
-    let imageUrl;
-    if (product.image && typeof product.image === 'string' && product.image.startsWith('data:image')) {
-        // It's already a data URL
-        imageUrl = product.image;
-    } else if (product.image && product.image.data) {
-        // Convert Blob data from MySQL to data URL
-        const uint8Array = new Uint8Array(product.image.data);
-        const blob = new Blob([uint8Array], { type: 'image/jpeg' });
-        imageUrl = URL.createObjectURL(blob);
-    } else {
-        // Fallback image
-        imageUrl = 'img/rice.png';
-    }
-    
-    // Generate random reviews count
-    const reviewsCount = Math.floor(Math.random() * 20) + 10;
-    
-    card.innerHTML = `
-        <img src="${imageUrl}" alt="${product.name}" class="product-image">
-        <div class="product-info">
-            <div class="product-name">${product.name}</div>
-            <div class="product-category">${product.category || 'Rice Product'}</div>
-            <div class="product-rating">
-                <div class="rating-stars">${starsHTML}</div>
-                <div class="product-reviews">${rating} • ${reviewsCount} Reviews</div>
-            </div>
-            <div class="product-description">${product.description || 'Fresh rice product'}</div>
-            <div class="product-price">${formattedPrice}</div>
-            <div class="product-buttons">
-                <button class="add-to-cart" data-id="${product.card_id}">ADD TO CART</button>
-            </div>
-        </div>
-    `;
-    
-    // Add event listener for card click to navigate to details page
-    card.addEventListener('click', function(e) {
-        // Only navigate if not clicking the add to cart button
-        if (!e.target.classList.contains('add-to-cart')) {
-            window.location.href = `/product-details.html?id=${product.card_id}`;
-        }
-    });
-    
-    // Add event listener to add to cart button
-    card.querySelector('.add-to-cart').addEventListener('click', function(e) {
-        e.stopPropagation(); // Prevent card click navigation
-        addToCart(product);
-    });
-    
-    return card;
-}
-
-function addToCart(product) {
-    // Check if product is already in cart
-    const existingItemIndex = cartItems.findIndex(item => item.card_id === product.card_id);
-    
-    if (existingItemIndex !== -1) {
-        // Product already in cart, increase quantity
-        cartItems[existingItemIndex].quantity += 1;
-        cartItems[existingItemIndex].total = cartItems[existingItemIndex].price * cartItems[existingItemIndex].quantity;
-    } else {
-        // Add new product to cart
-        cartItems.push({
-            card_id: product.card_id,
-            name: product.name,
-            price: product.price,
-            description: product.description,
-            category: product.category,
-            image: product.image,
-            quantity: 1,
-            days: 1,
-            total: product.price
-        });
-    }
-    
-    // Save cart to localStorage
-    saveCartToStorage();
-    
-    // Update cart count
-    updateCartCount();
-    
-    // Show success message
-    alert('Product added to cart successfully!');
 }
 
 function saveCartToStorage() {
@@ -348,7 +197,10 @@ function loadCartFromStorage() {
 
 function updateCartCount() {
     const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
-    cartCount.textContent = totalItems;
+    const cartCountElement = document.querySelector('.cart-count');
+    if (cartCountElement) {
+        cartCountElement.textContent = totalItems;
+    }
 }
 
 function filterProducts(searchTerm) {
@@ -409,7 +261,7 @@ async function handleFormSubmit(event) {
     }
     
     try {
-        const response = await fetch('/api/products', {
+        const response = await fetch('http://localhost:5000/api/products', {
             method: 'POST',
             body: formData
         });

@@ -229,7 +229,7 @@ function createRecommendedProductCard(product) {
     card.addEventListener('click', function(e) {
         // Don't navigate if clicking the add to cart button
         if (!e.target.classList.contains('recommended-add-to-cart')) {
-            window.location.href = `/product-details.html?id=${product.card_id}`;
+            window.location.href = `product-details.html?id=${product.card_id}`;
         }
     });
     
