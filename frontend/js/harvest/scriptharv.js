@@ -130,6 +130,7 @@ function displayProducts(products) {
         productCard.addEventListener('click', function(e) {
             // Don't navigate if clicking on the button
             if (!e.target.closest('.product-buttons') && !e.target.closest('button')) {
+                // For Live Server, use relative paths
                 window.location.href = `product-details.html?id=${product.card_id}`;
             }
         });

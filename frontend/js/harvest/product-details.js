@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchProductDetails(productId);
         fetchAllProducts();
     } else {
-        window.location.href = '/'; // Redirect to home if no ID
+        // Redirect to harvest page if no ID
+        window.location.href = 'harvest.html';
     }
     
     // Setup quantity controls
@@ -85,6 +86,10 @@ async function fetchProductDetails(productId) {
     } catch (error) {
         console.error('Error fetching product details:', error);
         alert('Error loading product details. Please try again.');
+        // Redirect back to harvest page on error
+        setTimeout(() => {
+            window.location.href = 'harvest.html';
+        }, 2000);
     }
 }
 
@@ -118,7 +123,7 @@ function displayProductDetails(product) {
         const blob = new Blob([uint8Array], { type: 'image/jpeg' });
         productImage.src = URL.createObjectURL(blob);
     } else {
-        productImage.src = 'images/farmer.jpg';
+        productImage.src = '../../assets/default-image.jpg';
     }
     
     // Set alt text
@@ -212,7 +217,7 @@ function createRecommendedProductCard(product) {
         const blob = new Blob([uint8Array], { type: 'image/jpeg' });
         imageUrl = URL.createObjectURL(blob);
     } else {
-        imageUrl = 'images/farmer.jpg';
+        imageUrl = '../../assets/default-image.jpg';
     }
     
     card.innerHTML = `
@@ -229,6 +234,7 @@ function createRecommendedProductCard(product) {
     card.addEventListener('click', function(e) {
         // Don't navigate if clicking the add to cart button
         if (!e.target.classList.contains('recommended-add-to-cart')) {
+            // Use relative path
             window.location.href = `product-details.html?id=${product.card_id}`;
         }
     });
@@ -296,4 +302,4 @@ function addProductToCart(product, quantity = 1) {
     
     // Show success message
     alert('Product added to cart successfully!');
-}
+};

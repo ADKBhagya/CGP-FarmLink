@@ -1177,23 +1177,32 @@ app.delete('/api/products/:id', (req, res) => {
     });
 });
 
-// Handle product details page
 app.get('/product-details.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/html/harvest', 'product-details.html'));
+    const filePath = path.join(__dirname, 'frontend/html/harvest/product-details.html');
+    console.log('Serving product-details.html from:', filePath);
+    res.sendFile(filePath);
 });
 
 // Handle cart page
-app.get('/cart', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/html/harvest', 'cart.html'));
+app.get('/cart.html', (req, res) => {
+    const filePath = path.join(__dirname, 'frontend/html/harvest/cart.html');
+    res.sendFile(filePath);
 });
 
-// Serve the HTML files
+// Serve the harvest HTML files
+app.get('/harvest.html', (req, res) => {
+    const filePath = path.join(__dirname, 'frontend/html/harvest/harvest.html');
+    res.sendFile(filePath);
+});
+
+app.get('/farmer.html', (req, res) => {
+    const filePath = path.join(__dirname, 'frontend/html/harvest/farmer.html');
+    res.sendFile(filePath);
+});
+
+// Root redirects to harvest
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/html/harvest', 'harvest.html'));
-});
-
-app.get('/farmer', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/html/harvest', 'farmer.html'));
+    res.redirect('/harvest.html');
 });
 
 // Error handler for multer file upload errors
