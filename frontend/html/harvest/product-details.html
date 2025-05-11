@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Farmlink Shop</title>
+    <link rel="stylesheet" href="../../css/harvest/stylesharv.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <a href="harvest.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <div class="header-title">Product Details</div>
+            <div class="cart-icon">
+                <a href="/cart"><i class="fas fa-shopping-cart"></i></a>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="product-details-container">
+        <div class="product-details-main">
+            <div class="product-main-info">
+                <img src="" alt="" id="product-image" class="product-details-image">
+                <div class="product-details-info">
+                    <h1 id="product-name"></h1>
+                    <div id="product-phone"></div>
+                    <div class="product-rating">
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span>(Farmlink)</span>
+                    </div>
+                    <p id="product-description"></p>
+
+                    <!-- Replace the original quantity selection with this -->
+                    <div class="quantity-select">
+                        <!-- The setupQuantityControls() function will populate this -->
+                    </div>
+
+                    <h2 id="product-price"></h2>
+
+                    <button id="add-to-cart-btn" class="cart-btn">Add To Cart</button>
+                </div>
+            </div>
+
+            <div class="product-details-section">
+                <h2>Harvest Details</h2>
+                <ul class="details-list" id="product-details-list">
+                    <!-- Details will be populated dynamically -->
+                </ul>
+            </div>
+
+            <div class="recommended-products-section">
+                <h2>Harvest You May Need</h2>
+                <div class="recommended-products" id="recommended-products">
+                    <!-- Recommended products will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/harvest/product-details.js"></script>
+</body>
+
+</html>

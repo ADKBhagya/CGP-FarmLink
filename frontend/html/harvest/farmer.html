@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmlink Shop - Admin</title>
+    <link rel="stylesheet" href="../../css/harvest/stylesharv.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="admin-view">
+    <header>
+        <div class="header-container">
+            <a href="#" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <div class="search-bar">
+                <input type="text" id="searchHeader" placeholder="Search On Farmlink Shop">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="header-actions">
+                <button id="openFormBtn" class="add-btn-header">Add</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="banner">
+            <img src="../../assets/harvest/rice.png" alt="Different varieties of rice">
+            <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+        </div>
+
+        <!-- Info Pills (not clickable filters) -->
+        <div class="info-pills">
+            <div class="info-pill"><i class="fas fa-undo"></i> Easy Return</div>
+            <div class="info-pill"><i class="fas fa-shield-alt"></i> Safe Payments</div>
+            <div class="info-pill"><i class="fas fa-tag"></i> Best Price</div>
+            <div class="info-pill"><i class="fas fa-check-circle"></i> 100% Authentic Products</div>
+        </div>
+
+        <!-- Category Filter Section -->
+        <div class="filter-section">
+            <h3>Filter by Category</h3>
+            <div class="category-filters">
+                <button class="category-filter-btn active" data-category="all">All</button>
+                <button class="category-filter-btn" data-category="White Rice">White Rice</button>
+                <button class="category-filter-btn" data-category="Brown Rice">Brown Rice</button>
+                <button class="category-filter-btn" data-category="Black Rice">Black Rice</button>
+                <button class="category-filter-btn" data-category="Red Rice">Red Rice</button>
+                <button class="category-filter-btn" data-category="Basmati Rice">Basmati</button>
+            </div>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+            <!-- Product cards will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <!-- Modal Form -->
+    <div id="productFormModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="formTitle">Add New Product</h2>
+            <form id="productForm" enctype="multipart/form-data">
+                <input type="hidden" id="card_id" name="card_id">
+                <div class="form-group">
+                    <label for="name">Farmer Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone_no">Phone Number:</label>
+                    <input type="text" id="phone_no" name="phone_no" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" placeholder="e.g., Local Farm">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="White Rice">White Rice</option>
+                        <option value="Brown Rice">Brown Rice</option>
+                        <option value="Black Rice">Black Rice</option>
+                        <option value="Red Rice">Red Rice</option>
+                        <option value="Basmati Rice">Basmati Rice</option>
+                        <option value="Jasmine Rice">Jasmine Rice</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Quantity (Stock):</label>
+                    <input type="number" id="stock" name="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="days">Days Fresh:</label>
+                    <input type="number" id="days" name="days" required>
+                </div>
+                <div class="form-group">
+                    <label for="item_details">Item Details:</label>
+                    <textarea id="item_details" name="item_details" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="image">Product Image:</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                    <div id="current-image-container" class="hidden">
+                        <p>Current image:</p>
+                        <img id="current-image" src="" alt="Current product image" style="max-width: 100px; max-height: 100px;">
+                        <p>Upload a new image to replace it.</p>
+                    </div>
+                </div>
+                <button type="submit" class="btn submit-btn">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/harvest/admin.js"></script>
+</body>
+</html>
