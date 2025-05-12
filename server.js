@@ -57,7 +57,14 @@ app.get("/api/harvest/getHarvest", (req, res) => {
 
 //Meetings section
 const meetingRoutes = require("./backend/routes/meetings");
+const harvestStorage = multer.memoryStorage();
 
+const harvestUpload = multer({
+  storage: harvestStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB file size limit
+  }
+});
 // Meetings Details API
 app.use('/api/meetings', meetingRoutes);
 
@@ -837,6 +844,384 @@ app.delete('/clearFertilizerCart', (req, res) => {
 //SERVICES SECTION CODES END
 
 
+
+
+
+
+
+
+
+
+
+
+
+//HARVEST SECTION CODES START
+
+// Fallback products for when DB is disconnected
+const fallbackProducts = [];
+
+// API Routes
+// Get all products
+app.get('/api/products', (req, res) => {
+    // Check if database is connected
+    if (db.state === 'disconnected') {
+        return res.json(fallbackProducts);
+    }
+
+    const query = 'SELECT * FROM harvest_cards';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching products:', err);
+            return res.status(500).json({ error: 'Failed to fetch products' });
+        }
+
+        // Convert BLOB image data to base64 for easy transport
+        const products = results.map(product => {
+            const processedProduct = { ...product };
+            if (product.image) {
+                // Convert binary image data to Base64 string
+                processedProduct.image = `data:image/jpeg;base64,${Buffer.from(product.image).toString('base64')}`;
+            }
+            return processedProduct;
+        });
+
+        res.json(products);
+    });
+});
+
+// Get a single product
+app.get('/api/products/:id', (req, res) => {
+    const productId = req.params.id;
+
+    // Check if database is connected
+    if (db.state === 'disconnected') {
+        const product = fallbackProducts.find(p => p.card_id === parseInt(productId));
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        return res.json(product);
+    }
+
+    const query = 'SELECT * FROM harvest_cards WHERE card_id = ?';
+
+    db.query(query, [productId], (err, results) => {
+        if (err) {
+            console.error('Error fetching product:', err);
+            return res.status(500).json({ error: 'Failed to fetch product' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        // Convert BLOB image data to base64
+        const product = { ...results[0] };
+        if (product.image) {
+            product.image = `data:image/jpeg;base64,${Buffer.from(product.image).toString('base64')}`;
+        }
+
+        res.json(product);
+    });
+});
+
+// Add a new product
+// Add a new product - with better debugging
+app.post('/api/products', upload.single('image'), (req, res) => {
+    try {
+        console.log('POST /api/products - Request received');
+        console.log('Request body:', req.body);
+        console.log('File info:', req.file ? 'File uploaded' : 'No file uploaded');
+
+        const {
+            name, price, phone_no, location, description,
+            category, item_details, stock, days
+        } = req.body;
+
+        // Check if required fields are present
+        if (!name || !price) {
+            console.log('Validation failed: Missing name or price');
+            return res.status(400).json({ error: 'Missing required fields: name and price are required' });
+        }
+
+        // Read the image file from disk if it exists
+        let imageBuffer = null;
+        if (req.file) {
+            try {
+                imageBuffer = fs.readFileSync(req.file.path);
+                console.log('Image file read successfully, size:', imageBuffer.length);
+                // Clean up the uploaded file after reading
+                fs.unlinkSync(req.file.path);
+                console.log('Temporary file cleaned up');
+            } catch (fileErr) {
+                console.error('Error reading uploaded file:', fileErr);
+            }
+        }
+
+        // Set a default rating for new products
+        const rating = 5.0;
+
+        // Set a default location if not provided
+        const productLocation = location || 'Local Farm';
+
+        console.log('Preparing to insert product:', {
+            name, price, phone_no, location: productLocation,
+            description, category, item_details, stock, days,
+            hasImage: !!imageBuffer
+        });
+
+        // With database connected, insert the product
+        const query = `
+            INSERT INTO harvest_cards 
+            (name, price, phone_no, location, description, category, item_details, stock, days, image, rating) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+        db.query(
+            query,
+            [name, price, phone_no, productLocation, description, category, item_details, stock || 1, days || 1, imageBuffer, rating],
+            (err, result) => {
+                if (err) {
+                    console.error('Database error while adding product:', err);
+                    console.error('Error code:', err.code);
+                    console.error('Error message:', err.message);
+                    return res.status(500).json({ error: `Failed to add product: ${err.message}` });
+                }
+
+                console.log('Product added successfully, insert ID:', result.insertId);
+
+                // Return the created product with the new ID
+                const createdProduct = {
+                    card_id: result.insertId,
+                    name,
+                    price,
+                    phone_no,
+                    location: productLocation,
+                    description,
+                    category,
+                    item_details,
+                    stock: stock || 1,
+                    days: days || 1,
+                    image: imageBuffer ? `data:image/jpeg;base64,${imageBuffer.toString('base64')}` : null,
+                    rating
+                };
+
+                console.log('Sending success response');
+                res.status(201).json(createdProduct);
+            }
+        );
+    } catch (error) {
+        console.error('Unexpected error in POST /api/products:', error);
+        console.error('Error stack:', error.stack);
+        res.status(500).json({ error: `Server error: ${error.message}` });
+    }
+});
+
+// Update a product
+app.put('/api/products/:id', upload.single('image'), (req, res) => {
+    try {
+        const productId = req.params.id;
+        const {
+            name, price, phone_no, location, description,
+            category, item_details, stock, days
+        } = req.body;
+
+        // Check if required fields are present
+        if (!name || !price) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // Read the image file from disk if it exists
+        let imageBuffer = null;
+        if (req.file) {
+            try {
+                imageBuffer = fs.readFileSync(req.file.path);
+                // Clean up the uploaded file after reading
+                fs.unlinkSync(req.file.path);
+            } catch (fileErr) {
+                console.error('Error reading uploaded file:', fileErr);
+            }
+        }
+
+        // Set a default rating if not provided
+        const rating = 5.0;
+
+        // Check if database is connected
+        if (db.state === 'disconnected') {
+            const productIndex = fallbackProducts.findIndex(p => p.card_id === parseInt(productId));
+
+            if (productIndex === -1) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+
+            // For fallback mode, convert image buffer to base64 or keep existing image
+            let imageData = fallbackProducts[productIndex].image;
+            if (imageBuffer) {
+                imageData = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`;
+            }
+
+            const updatedProduct = {
+                card_id: parseInt(productId),
+                name,
+                price,
+                phone_no,
+                location,
+                description,
+                category,
+                item_details,
+                stock: stock || fallbackProducts[productIndex].stock,
+                days: days || fallbackProducts[productIndex].days,
+                image: imageData,
+                rating: fallbackProducts[productIndex].rating
+            };
+
+            fallbackProducts[productIndex] = updatedProduct;
+            return res.json(updatedProduct);
+        }
+
+        // If a new image was uploaded, update it too; otherwise, just update the other fields
+        let query, queryParams;
+
+        if (imageBuffer) {
+            query = `
+                UPDATE harvest_cards 
+                SET name = ?, price = ?, phone_no = ?, location = ?, description = ?, 
+                category = ?, item_details = ?, stock = ?, days = ?, image = ?, rating = ? 
+                WHERE card_id = ?`;
+
+            queryParams = [name, price, phone_no, location, description,
+                category, item_details, stock || 1, days || 1, imageBuffer, rating, productId];
+        } else {
+            query = `
+                UPDATE harvest_cards 
+                SET name = ?, price = ?, phone_no = ?, location = ?, description = ?, 
+                category = ?, item_details = ?, stock = ?, days = ?, rating = ? 
+                WHERE card_id = ?`;
+
+            queryParams = [name, price, phone_no, location, description,
+                category, item_details, stock || 1, days || 1, rating, productId];
+        }
+
+        db.query(query, queryParams, (err, result) => {
+            if (err) {
+                console.error('Error updating product:', err);
+                return res.status(500).json({ error: 'Failed to update product' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+
+            // Get the updated product to return
+            db.query('SELECT * FROM harvest_cards WHERE card_id = ?', [productId], (err, results) => {
+                if (err || results.length === 0) {
+                    return res.json({
+                        card_id: parseInt(productId),
+                        name,
+                        price,
+                        phone_no,
+                        location,
+                        description,
+                        category,
+                        item_details,
+                        stock: stock || 1,
+                        days: days || 1
+                    });
+                }
+
+                // Convert BLOB image data to base64
+                const product = { ...results[0] };
+                if (product.image) {
+                    product.image = `data:image/jpeg;base64,${Buffer.from(product.image).toString('base64')}`;
+                }
+
+                res.json(product);
+            });
+        });
+    } catch (error) {
+        console.error('Error processing request:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Delete a product
+app.delete('/api/products/:id', (req, res) => {
+    const productId = req.params.id;
+
+    // Check if database is connected
+    if (db.state === 'disconnected') {
+        const productIndex = fallbackProducts.findIndex(p => p.card_id === parseInt(productId));
+
+        if (productIndex === -1) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        fallbackProducts.splice(productIndex, 1);
+        return res.json({ message: 'Product deleted successfully' });
+    }
+
+    const query = 'DELETE FROM harvest_cards WHERE card_id = ?';
+
+    db.query(query, [productId], (err, result) => {
+        if (err) {
+            console.error('Error deleting product:', err);
+            return res.status(500).json({ error: 'Failed to delete product' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        res.json({ message: 'Product deleted successfully' });
+    });
+});
+
+app.get('/product-details.html', (req, res) => {
+    const filePath = path.join(__dirname, 'frontend/html/harvest/product-details.html');
+    console.log('Serving product-details.html from:', filePath);
+    res.sendFile(filePath);
+});
+
+// Handle cart page
+app.get('/cart.html', (req, res) => {
+    const filePath = path.join(__dirname, 'frontend/html/harvest/cart.html');
+    res.sendFile(filePath);
+});
+
+// Serve the harvest HTML files
+app.get('/harvest.html', (req, res) => {
+    const filePath = path.join(__dirname, 'frontend/html/harvest/harvest.html');
+    res.sendFile(filePath);
+});
+
+app.get('/farmer.html', (req, res) => {
+    const filePath = path.join(__dirname, 'frontend/html/harvest/farmer.html');
+    res.sendFile(filePath);
+});
+
+// Root redirects to harvest
+app.get('/', (req, res) => {
+    res.redirect('/harvest.html');
+});
+
+// Error handler for multer file upload errors
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ error: 'File too large. Maximum size is 5MB.' });
+        }
+        return res.status(400).json({ error: `Upload error: ${err.message}` });
+    } else if (err) {
+        // An unknown error occurred
+        return res.status(500).json({ error: err.message });
+    }
+    next();
+});
+
+
+//HARVEST SECTION CODES END
 
 
 

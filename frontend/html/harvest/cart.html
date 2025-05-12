@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Farmlink Shop</title>
+    <link rel="stylesheet" href="../../css/harvest/stylesharv.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="harvest.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="cart-title">YOUR CART</h1>
+            <div class="header-spacer"></div>
+        </div>
+    </header>
+
+    <main class="cart-container">
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-header">
+                <h2>Subtotal</h2>
+                <span id="cartSubtotal">Rs 0.00 LKR</span>
+            </div>
+
+            <div class="shipping-info">
+                <i class="fas fa-truck"></i>
+                <div>
+                    <span>Shipping</span>
+                    <p>Delivered in 2-3 Business Days</p>
+                </div>
+            </div>
+
+            <div class="order-notes">
+                <h3>Order Notes</h3>
+                <textarea id="orderNotes" placeholder="Add any special instructions..."></textarea>
+            </div>
+
+            <button id="checkoutBtn" class="checkout-btn">
+                Checkout
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </main>
+
+
+
+
+
+    <script src="../../js/harvest/cart.js"></script>
+</body>
+</html>
