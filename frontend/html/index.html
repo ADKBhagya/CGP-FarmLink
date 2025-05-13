@@ -10,8 +10,11 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../css/style.css">
+      <link rel="stylesheet" href="../../css/meetings/meetings.css" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/frontend/css/staff/staff.css">
 </head>
 <body>
     <!-- Loading Animation -->
@@ -21,7 +24,7 @@
                 Farm<span>Link</span>
             </div>
             <div class="loader-spinner"></div>
-            <div class="loader-text">Achinda...</div>
+            <div class="loader-text">Loading...</div>
         </div>
     </div>
     <!-- Navigation -->
@@ -36,7 +39,7 @@
                     <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Harvest</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Meetings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/frontend/html/meetings/Meeting.html">Meetings</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
                 </ul>
                 <div class="nav-buttons">
@@ -114,196 +117,61 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section" data-aos="fade-up">
-        <div class="container">
-            <div class="stats-grid">
-                <!-- Weather Card -->
-                <div class="weather-card stat-card" data-aos="fade-right" data-aos-delay="200">
-                    <div class="temp">30°C</div>
-                    <div class="weather-status">Mostly Cloud</div>
-                    <div class="weather-icon">
-                        <div class="sun-icon"></div>
-                    </div>
-                    <div class="date-time">
-                        Monday,<br>
-                        28 January<br>
-                        09:41 AM
-                    </div>
-                </div>
-
-                <!-- Farmer Count Card -->
-                <div class="farmer-card stat-card" data-aos="fade-left" data-aos-delay="400">
-                    <div class="card-content">
-                        <div class="title">Farmer<br>Count</div>
-                        <div class="dots">:</div>
-                        <div class="count">034</div>
-                    </div>
-                </div>
-
-                <!-- Total Harvest Card -->
-                <div class="harvest-stat stat-card" data-aos="fade-up" data-aos-delay="600">
-                    <div class="title">Total Harvest</div>
-                    <div class="value">45000kg</div>
-                </div>
-
-                <!-- Active Buyers Card -->
-                <div class="buyers-stat stat-card" data-aos="fade-up" data-aos-delay="800">
-                    <div class="title">Active Buyers</div>
-                    <div class="value">0134</div>
-                </div>
+     <section class="stats-container">
+            <section class="stats">
+            <div class="weather-box">
+                <h2 id="temperature">30°C</h2>
+                <h3 id="weather-condition">Mostly Cloudy</h3>
+                <i id="weather-icon" class="fas fa-cloud"></i>
+                <p id="date">Monday, 28 January</p>
+                <p id="time">09:41 AM</p>
             </div>
-        </div>
-    </section>
+            <section>
+                <div class="stat-box">Number of Staff<br><strong id="staff-count">...</strong></div>
+                <div class="stat-box">Number of Farmers<br><strong id="farmers-count">...</strong></div>
+            </section>
+            <section>
+                <div class="stat-box">Total Harvest<br><strong id="harvest-count">...</strong></div>
+                <div class="stat-box">Active Buyers<br><strong id="buyers-count">...</strong></div>
+            </section>
+            </section>
+        </section> 
 
-    <!-- Meetings Section -->
-    <section class="meetings-section" data-aos="fade-up">
-        <div class="container py-5">
-            <div class="section-header">
-                <h2 data-aos="fade-right">Meetings</h2>
-                <a href="#" class="explore-more" data-aos="fade-left">
-                    Explore More <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="meetings-grid">
-                <div class="meeting-card" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="card-image">
-                        <img src="images/img01.jpg" alt="Staff Meeting 2025">
-                        <div class="card-overlay">
-                            <div class="meeting-content">
-                                <h3>Staff Meeting 2025</h3>
-                                <p class="meeting-details">
-                                    <span class="date">28 Jan 2025</span>
-                                    <span class="bullet">•</span>
-                                    <span class="time">3:30 pm</span>
-                                </p>
-                                <button class="show-more">
-                                    Show more
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Meetings Section (DYNAMIC) -->
+<!-- Meetings Section (DYNAMIC) -->
+<section class="meetings-section" data-aos="fade-up">
+  <div class="container py-5">
+    <div class="section-header">
+      <h2 data-aos="fade-right">Today's Meetings</h2>
+      <a href="/frontend/html/meetings/Meeting.html" class="explore-more" data-aos="fade-left">
+        Explore More <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    <div id="todays-meetings" class="meetings-grid"></div>
+  </div>
+</section>
 
-                <div class="meeting-card" data-aos="zoom-in" data-aos-delay="400">
-                    <div class="card-image">
-                        <img src="images/img02.jpg" alt="Staff Meeting 2025">
-                        <div class="card-overlay">
-                            <div class="meeting-content">
-                                <h3>Staff Meeting 2025</h3>
-                                <p class="meeting-details">
-                                    <span class="date">15 Feb 2025</span>
-                                    <span class="bullet">•</span>
-                                    <span class="time">4:15 pm</span>
-                                </p>
-                                <button class="show-more">
-                                    Show more
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="meeting-card" data-aos="zoom-in" data-aos-delay="600">
-                    <div class="card-image">
-                        <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284" alt="Farmers Meeting 2025">
-                        <div class="card-overlay">
-                            <div class="meeting-content">
-                                <h3>Farmers Meeting 2025</h3>
-                                <p class="meeting-details">
-                                    <span class="date">10 Mar 2025</span>
-                                    <span class="bullet">•</span>
-                                    <span class="time">1:00 pm</span>
-                                </p>
-                                <button class="show-more">
-                                    Show more
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+            
 
     <!-- Harvest Section -->
-    <section class="harvest-section">
-        <div class="container py-5">
-            <div class="section-header">
-                <h2>Harvest</h2>
-                <a href="#" class="explore-more">
-                    Explore More <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="harvest-cards">
-                <div class="harvest-card">
-                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d" class="card-img" alt="Michele John">
-                    <div class="card-content">
-                        <div class="profile-info">
-                            <h3>Michele John</h3>
-                            <span class="location"><i class="fas fa-map-marker-alt"></i> Kotawehera</span>
-                        </div>
-                        <div class="stock-info">
-                            <span class="stock-status">450KG in Stock</span>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                        <div class="price">Rs 950.00</div>
-                    </div>
-                </div>
+    <!-- Harvest Section (DYNAMIC) -->
+<section class="harvest-section">
+  <div class="container py-5">
+    <div class="section-header">
+      <h2>Harvest</h2>
+      <a href="/frontend/html/shop/harvest.html" class="explore-more">
+        Explore More <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    <div id="harvest-products" class="harvest-cards">
+       
 
-                <div class="harvest-card">
-                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d" class="card-img" alt="Michele John">
-                    <div class="card-content">
-                        <div class="profile-info">
-                            <h3>Michele John</h3>
-                            <span class="location"><i class="fas fa-map-marker-alt"></i> Kotawehera</span>
-                        </div>
-                        <div class="stock-info">
-                            <span class="stock-status">450KG in Stock</span>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                        <div class="price">Rs 950.00</div>
-                    </div>
-                </div>
+    </div>
+  </div>
+</section>
 
-                <div class="harvest-card">
-                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d" class="card-img" alt="Michele John">
-                    <div class="card-content">
-                        <div class="profile-info">
-                            <h3>Michele John</h3>
-                            <span class="location"><i class="fas fa-map-marker-alt"></i> Kotawehera</span>
-                        </div>
-                        <div class="stock-info">
-                            <span class="stock-status">450KG in Stock</span>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                        <div class="price">Rs 950.00</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Footer -->
     <footer data-aos="fade-up">
@@ -330,8 +198,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- AOS JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="/frontend/js/staff/dashboard.js"></script>
+    <script src="/script.js"></script>
+  
     <!-- Custom JS -->
     <script src="js/main.js"></script>
+
+
+   
+
+
     <script>
         // Initialize AOS
         AOS.init({
@@ -345,6 +222,142 @@
             document.querySelector('.page-loader').style.display = 'none';
         });
     </script>
+
+<script>
+const BASE_URL = "http://localhost:5000";
+
+async function loadDashboardStats() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/dashboard/summary`);
+    const stats = await res.json();
+
+    document.getElementById("staff-count").textContent = stats.staff || "0";
+    document.getElementById("farmers-count").textContent = stats.farmers || "0";
+    document.getElementById("harvest-count").textContent = stats.totalHarvest+ "kg" || "0kg";
+    document.getElementById("buyers-count").textContent = stats.buyers|| "0";
+  } catch (error) {
+    console.error("❌ Failed to load dashboard stats:", error);
+  }
+}
+
+
+// 📅 Load MEETINGS Section
+function formatTime(t) {
+  const [h, m] = t.split(":");
+  const hour = parseInt(h, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  return `${(hour % 12 || 12).toString().padStart(2, "0")}:${m} ${ampm}`;
+}
+
+async function loadHomeMeetings() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/meetings`);
+    const meetings = await res.json();
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const container = document.getElementById("todays-meetings");
+    container.innerHTML = "";
+
+    const filtered = meetings.filter(m => {
+      const mDate = new Date(m.date);
+      mDate.setHours(0, 0, 0, 0);
+      return mDate.getTime() === today.getTime();
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<p class="text-muted">No meetings scheduled for today.</p>`;
+      return;
+    }
+
+    filtered.forEach(m => {
+      const card = document.createElement("div");
+      card.className = `meeting-card-modern ${m.category === "Staff" ? "bg-staff" : "bg-farmer"}`;
+      card.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="time">${formatTime(m.start_time)} – ${formatTime(m.end_time)}</div>
+            <div class="meeting-title">${m.title}</div>
+            <div class="meeting-location">${m.location}</div>
+          </div>
+          <div class="badge-${m.category === "Staff" ? "staff" : "farmer"}">${m.category}</div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  } catch (err) {
+    console.error("❌ Failed to load homepage meetings:", err);
+    document.getElementById("todays-meetings").innerHTML = `<p class="text-danger">Error loading meetings.</p>`;
+  }
+}
+
+// 🥦 Load HARVEST Section
+async function loadHomeHarvest() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/products`);
+    const data = await res.json();
+    const container = document.getElementById("harvest-products");
+    container.innerHTML = "";
+
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML = `<p class="text-muted">No harvest products available.</p>`;
+      return;
+    }
+
+    const top3 = data.slice(0, 3); // Show only 3 cards
+    top3.forEach(product => {
+      const image = product.image || 'https://via.placeholder.com/300x200.png?text=No+Image';
+      const price = parseFloat(product.price || 0).toFixed(2);
+
+      const card = document.createElement("div");
+      card.className = "harvest-card";
+      card.innerHTML = `
+        <img src="${image}" class="card-img" alt="${product.name || 'Harvest Item'}">
+        <div class="card-content">
+          <div class="profile-info">
+            <h3>${product.name || 'Unknown'}</h3>
+            <span class="location"><i class="fas fa-map-marker-alt"></i> ${product.location || 'N/A'}</span>
+          </div>
+          <div class="stock-info">
+            <span class="stock-status">${product.stock || '0'}KG in Stock</span>
+            <div class="rating">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i>
+              <i class="fas fa-star"></i><i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <div class="price">Rs ${price}</div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  } catch (err) {
+    console.error("❌ Error loading harvest products:", err);
+    document.getElementById("harvest-products").innerHTML = `<p class="text-danger">Error loading harvest items.</p>`;
+  }
+}
+
+
+
+
+
+
+// Run both loaders when DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+   
+  
+  loadDashboardStats();
+  loadHomeMeetings();
+  loadHomeHarvest();
+
+
+});
+</script>
+
+
+
+
+
 
 </body>
 </html> 
