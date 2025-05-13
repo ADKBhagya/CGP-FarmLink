@@ -462,66 +462,106 @@ function handleDelete() {
 
 async function downloadFarmersPDF() {
     const section = document.getElementById("view-farmers");
-    const originalDisplay = section.style.display;
+    const table = document.getElementById("farmerTableContainer");
   
-    // Step 1: Make section visible if hidden
+    // Show table if hidden
+    const originalDisplay = section.style.display;
     section.style.display = "block";
   
-    // Step 2: Load data if needed
-    await loadFarmers(); // Optional but recommended if not yet loaded
+    await loadFarmers(); // Ensure data is loaded
   
-    // Step 3: Wait for DOM render, then export
-    setTimeout(() => {
-      const element = document.getElementById('farmerTableContainer');
-      if (element) {
-        console.log("✅ Exporting Farmer Table HTML:", element.innerHTML);
-        html2pdf().from(element).save('farmers-report.pdf');
-      } else {
-        console.error("❌ Farmer table not found.");
-      }
+    setTimeout(async () => {
+      html2canvas(table).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("landscape");
   
-      // Step 4: Restore original display
-      section.style.display = originalDisplay;
-    }, 1000); // Wait 1 second for DOM updates
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+  
+        // ✅ Add Title
+        pdf.setFontSize(18);
+        pdf.text("FarmLink - Registered Farmers Report", pdfWidth / 2, 15, { align: "center" });
+  
+        // Add image after title
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgWidth = pdfWidth - 20;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+  
+        pdf.addImage(imgData, "PNG", 10, 25, imgWidth, imgHeight); // Start image lower to make space for title
+        pdf.save("farmers-report.pdf");
+  
+        section.style.display = originalDisplay;
+      });
+    }, 500);
   }
+  
   
   
   async function downloadBuyersPDF() {
     const section = document.getElementById("view-buyers");
-    const originalDisplay = section.style.display;
+    const table = document.getElementById("buyerTableContainer");
   
+    const originalDisplay = section.style.display;
     section.style.display = "block";
-    await loadBuyers();
+  
+    await loadBuyers(); // Ensure data is loaded
   
     setTimeout(() => {
-      const element = document.getElementById('buyerTableContainer');
-      if (element) {
-        console.log("✅ Exporting Buyer Table HTML:", element.innerHTML);
-        html2pdf().from(element).save('buyers-report.pdf');
-      } else {
-        console.error("❌ Buyer table not found.");
-      }
-      section.style.display = originalDisplay;
-    }, 1000);
+      html2canvas(table).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("landscape");
+  
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+  
+        // Title
+        pdf.setFontSize(18);
+        pdf.text("FarmLink - Buyers Report", pdfWidth / 2, 15, { align: "center" });
+  
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgWidth = pdfWidth - 20;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+  
+        pdf.addImage(imgData, "PNG", 10, 25, imgWidth, imgHeight);
+        pdf.save("buyers-report.pdf");
+  
+        section.style.display = originalDisplay;
+      });
+    }, 500);
   }
+  
   
   async function downloadHarvestPDF() {
     const section = document.getElementById("view-harvest");
-    const originalDisplay = section.style.display;
+    const table = document.getElementById("harvestTableContainer");
   
+    const originalDisplay = section.style.display;
     section.style.display = "block";
-    await loadHarvest();
+  
+    await loadHarvest(); // Ensure data is loaded
   
     setTimeout(() => {
-      const element = document.getElementById('harvestTableContainer');
-      if (element) {
-        console.log("✅ Exporting Harvest Table HTML:", element.innerHTML);
-        html2pdf().from(element).save('harvest-report.pdf');
-      } else {
-        console.error("❌ Harvest table not found.");
-      }
-      section.style.display = originalDisplay;
-    }, 1000);
+      html2canvas(table).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("landscape");
+  
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+  
+        // Title
+        pdf.setFontSize(18);
+        pdf.text("FarmLink - Harvest Report", pdfWidth / 2, 15, { align: "center" });
+  
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgWidth = pdfWidth - 20;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+  
+        pdf.addImage(imgData, "PNG", 10, 25, imgWidth, imgHeight);
+        pdf.save("harvest-report.pdf");
+  
+        section.style.display = originalDisplay;
+      });
+    }, 500);
   }
   
   

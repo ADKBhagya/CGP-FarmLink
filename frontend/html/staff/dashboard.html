@@ -8,6 +8,9 @@
     <!-- Toastify CSS & JS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/frontend/css/staff/staff.css">
@@ -385,7 +388,8 @@
                   placeholder="Search by name, email, or location..." 
                   onkeyup="filterTable(this, 'buyerTableBody')"
                 >
-                <button class="modern-pdf-button" onclick="downloadBuyerPDF()">📄 Download PDF</button>
+                <button class="modern-pdf-button" onclick="downloadBuyersPDF()">📄 Download PDF</button>
+
               </div>
             </div>
           
@@ -438,8 +442,8 @@
         </div>
     </footer>
     <!-- Footer Section -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="/frontend/js/staff/dashboard.js"></script>
     <script src="/script.js"></script>
+      
 </body>
 </html>
