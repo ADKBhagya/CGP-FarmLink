@@ -738,8 +738,7 @@
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function () {
             // Get the card ID from URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const cardId = urlParams.get('id');
+            const cardId = getCardIdFromUrl();
 
             if (cardId) {
                 currentCardId = cardId;
@@ -751,22 +750,38 @@
             }
 
             // Load cart from localStorage
-            const savedCart = localStorage.getItem('farmlink-harvest-cart');
+            const savedCart = localStorage.getItem('farmlink-cart');
             if (savedCart) {
                 try {
                     cartItems = JSON.parse(savedCart);
+                    updateCartCount();
                 } catch (e) {
                     console.error('Error loading cart:', e);
                 }
             }
         });
 
+        function getCardIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
         // Fetch card details
-        function fetchCardDetails(cardId) {
-            fetch(`/getHarvestCardById?id=${cardId}`)
+        function fetchCardDetails() {
+            const cardId = getCardIdFromUrl();
+            if (!cardId) {
+                console.error('No card ID found in URL');
+                return;
+            }
+
+            // Define base API URL
+            const apiBaseUrl = 'http://localhost:5000'; // Make sure this matches your server port
+
+            // Use the correct fertilizer endpoint (not rent endpoint)
+            fetch(`${apiBaseUrl}/getHarvestCardById?id=${cardId}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Failed to fetch product details');
+                        throw new Error(`Server returned status ${response.status}`);
                     }
                     return response.json();
                 })
@@ -774,17 +789,22 @@
                     displayCardDetails(card);
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to load product details. Please try again.');
+                    console.error('Error fetching product details:', error);
+                    // Display error message to user
+                    document.getElementById('product-title').textContent = 'Error Loading Product';
+                    document.getElementById('product-description').textContent =
+                        'Unable to load product details. Please try again later.';
                 });
         }
 
         // Fetch related cards (all cards except the current one)
         function fetchRelatedCards(currentCardId) {
-            fetch('/getHarvestCardsByCategory?category=all')
+            const apiBaseUrl = 'http://localhost:5000'; // Make sure this matches your server port
+
+            fetch(`${apiBaseUrl}/getHarvestCardsByCategory?category=all`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Failed to fetch related products');
+                        throw new Error(`Server returned status ${response.status}`);
                     }
                     return response.json();
                 })
@@ -794,7 +814,10 @@
                     displayRelatedCards(relatedCards);
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('Error fetching related products:', error);
+                    // Optionally display an error message for related products
+                    document.getElementById('related-items-container').innerHTML =
+                        '<p>Unable to load related products.</p>';
                 });
         }
 
@@ -933,19 +956,27 @@
 
         // Add to cart function
         function addToCart() {
-            if (!currentCardId) return;
+            const cardId = getCardIdFromUrl();
+            if (!cardId) return;
 
-            fetch(`/getHarvestCardById?id=${currentCardId}`)
-                .then(response => response.json())
+            const apiBaseUrl = 'http://localhost:5000'; // Make sure this matches your server port
+
+            fetch(`${apiBaseUrl}/getHarvestCardById?id=${cardId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Server returned status ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(card => {
                     // First add to localStorage for client-side functionality
-                    const existingItem = cartItems.find(item => item.id === parseInt(currentCardId));
+                    const existingItem = cartItems.find(item => item.id === parseInt(cardId));
 
                     if (existingItem) {
                         existingItem.quantity += quantity;
                     } else {
                         cartItems.push({
-                            id: parseInt(currentCardId),
+                            id: parseInt(cardId),
                             name: card.name,
                             price: parseFloat(card.price),
                             quantity: quantity,
@@ -965,14 +996,14 @@
                     }
 
                     // Send to server (updated endpoint name)
-                    fetch('/addToFertilizerCart', {
+                    fetch(`${apiBaseUrl}/addToFertilizerCart`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
                             userId: userId,
-                            cardId: currentCardId,
+                            cardId: cardId,
                             quantity: quantity,
                             days: days
                         })
@@ -994,7 +1025,7 @@
                     // Show confirmation
                     alert(`${card.name} added to cart!`);
 
-                    // Optionally update cart count in the header
+                    // Update cart count in the header
                     updateCartCount();
                 })
                 .catch(error => {
@@ -1030,8 +1061,10 @@
                 localStorage.setItem('farmlink-user-id', userId);
             }
 
+            const apiBaseUrl = 'http://localhost:5000'; // Make sure this matches your server port
+
             // Updated endpoint name
-            fetch('/addToFertilizerCart', {
+            fetch(`${apiBaseUrl}/addToFertilizerCart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1048,7 +1081,7 @@
             // Show confirmation
             alert(`${name} added to cart!`);
 
-            // Optionally update cart count in the header
+            // Update cart count in the header
             updateCartCount();
 
             // Stop event propagation

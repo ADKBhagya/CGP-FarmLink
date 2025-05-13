@@ -763,42 +763,71 @@
             }
         });
 
+        function getCardIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+}
+function updateCartCount() {
+    const cartItems = JSON.parse(localStorage.getItem('farmlink-cart') || '[]');
+    const count = cartItems.reduce((total, item) => total + item.quantity, 0);
+    const cartCountElement = document.querySelector('.cart-count');
+    if (cartCountElement) {
+        cartCountElement.textContent = count;
+    }
+}
+
         // Fetch card details
-        function fetchCardDetails(cardId) {
-            fetch(`/getRentCardById?id=${cardId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch product details');
-                    }
-                    return response.json();
-                })
-                .then(card => {
-                    displayCardDetails(card);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to load product details. Please try again.');
-                });
-        }
+function fetchCardDetails(cardId) {
+    if (!cardId) {
+        console.error('No card ID found in URL');
+        return;
+    }
+
+    // Define base API URL
+    const apiBaseUrl = 'http://localhost:5000'; // Make sure this matches your server port
+
+    fetch(`${apiBaseUrl}/getRentCardById?id=${cardId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server returned status ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(card => {
+            displayCardDetails(card);
+        })
+        .catch(error => {
+            console.error('Error fetching product details:', error);
+            // Display error message to user
+            document.getElementById('product-title').textContent = 'Error Loading Product';
+            document.getElementById('product-description').textContent = 
+                'Unable to load product details. Please try again later.';
+        });
+}
 
         // Fetch related cards (all cards except the current one)
-        function fetchRelatedCards(currentCardId) {
-            fetch('/getRentCardsByCategory?category=all')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch related products');
-                    }
-                    return response.json();
-                })
-                .then(cards => {
-                    // Filter out the current card
-                    const relatedCards = cards.filter(card => card.card_id != currentCardId);
-                    displayRelatedCards(relatedCards);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
+function fetchRelatedCards(currentCardId) {
+    const apiBaseUrl = 'http://localhost:5000'; // Make sure this matches your server port
+    
+    fetch(`${apiBaseUrl}/getRentCardsByCategory?category=all`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server returned status ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(cards => {
+            // Filter out the current card
+            const relatedCards = cards.filter(card => card.card_id != currentCardId);
+            displayRelatedCards(relatedCards);
+        })
+        .catch(error => {
+            console.error('Error fetching related products:', error);
+            // Optionally display an error message for related products
+            document.getElementById('related-items-container').innerHTML = 
+                '<p>Unable to load related products.</p>';
+        });
+}
 
         // Display card details
         function displayCardDetails(card) {
@@ -934,63 +963,137 @@
         }
 
         // Add to cart function
-        function addToCart() {
-            if (!currentCardId) return;
+function addToCart() {
+    if (!currentCardId) return;
 
-            fetch(`/getRentCardById?id=${currentCardId}`)
-                .then(response => response.json())
-                .then(card => {
-                    const existingItem = cartItems.find(item => item.id === parseInt(currentCardId));
+    const apiBaseUrl = 'http://localhost:5000'; // Make sure this matches your server port
 
-                    if (existingItem) {
-                        existingItem.quantity += quantity;
-                    } else {
-                        cartItems.push({
-                            id: parseInt(currentCardId),
-                            name: card.name,
-                            price: parseFloat(card.price),
-                            quantity: quantity,
-                            days: days
-                        });
-                    }
-
-                    // Save cart
-                    localStorage.setItem('farmlink-cart', JSON.stringify(cartItems));
-
-                    // Show confirmation
-                    alert(`${card.name} added to cart!`);
-                })
-                .catch(error => {
-                    console.error('Error adding to cart:', error);
-                    alert('Failed to add item to cart. Please try again.');
-                });
-        }
-
-        // Add to cart directly from related products
-        function addToCartDirect(cardId, name, price) {
-            const existingItem = cartItems.find(item => item.id === cardId);
+    fetch(`${apiBaseUrl}/getRentCardById?id=${currentCardId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server returned status ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(card => {
+            // First add to localStorage for client-side functionality
+            const existingItem = cartItems.find(item => item.id === parseInt(currentCardId));
 
             if (existingItem) {
-                existingItem.quantity += 1;
+                existingItem.quantity += quantity;
+                existingItem.days = days;
             } else {
                 cartItems.push({
-                    id: cardId,
-                    name: name,
-                    price: parseFloat(price),
-                    quantity: 1,
-                    days: 1 // Default to 1 day
+                    id: parseInt(currentCardId),
+                    name: card.name,
+                    price: parseFloat(card.price),
+                    quantity: quantity,
+                    days: days
                 });
             }
 
-            // Save cart
+            // Save cart to localStorage
             localStorage.setItem('farmlink-cart', JSON.stringify(cartItems));
 
-            // Show confirmation
-            alert(`${name} added to cart!`);
+            // Then send to server for database storage
+            // Generate a simple user ID if none exists
+            let userId = localStorage.getItem('farmlink-user-id');
+            if (!userId) {
+                userId = 'user_' + Date.now();
+                localStorage.setItem('farmlink-user-id', userId);
+            }
 
-            // Stop event propagation
-            event.stopPropagation();
-        }
+            // Send to server
+            fetch(`${apiBaseUrl}/addToRentCart`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    cardId: currentCardId,
+                    quantity: quantity,
+                    days: days
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Successfully added to database cart:', data);
+            })
+            .catch(error => {
+                console.error('Error adding to database cart:', error);
+                // Continue anyway as we have the localStorage backup
+            });
+
+            // Show confirmation
+            alert(`${card.name} added to cart!`);
+
+            // Update cart count in the header
+            updateCartCount();
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            alert('Failed to add item to cart. Please try again.');
+        });
+}
+
+        // Add to cart directly from related products
+function addToCartDirect(cardId, name, price) {
+    // Add to localStorage cart
+    const existingItem = cartItems.find(item => item.id === cardId);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cartItems.push({
+            id: cardId,
+            name: name,
+            price: parseFloat(price),
+            quantity: 1,
+            days: 1 // Default to 1 day
+        });
+    }
+
+    // Save cart to localStorage
+    localStorage.setItem('farmlink-cart', JSON.stringify(cartItems));
+
+    // Add to database cart
+    let userId = localStorage.getItem('farmlink-user-id');
+    if (!userId) {
+        userId = 'user_' + Date.now();
+        localStorage.setItem('farmlink-user-id', userId);
+    }
+
+    const apiBaseUrl = 'http://localhost:5000'; // Make sure this matches your server port
+
+    fetch(`${apiBaseUrl}/addToRentCart`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userId: userId,
+            cardId: cardId,
+            quantity: 1,
+            days: 1
+        })
+    })
+    .catch(error => console.error('Error adding to database cart:', error));
+
+    // Show confirmation
+    alert(`${name} added to cart!`);
+
+    // Update cart count in the header
+    updateCartCount();
+
+    // Stop event propagation
+    event.stopPropagation();
+}
 
         // Go back function
         function goBack() {

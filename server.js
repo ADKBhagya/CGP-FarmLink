@@ -12,6 +12,8 @@ const rentItemsRoutes = require("./backend/routes/rentItems");
 const fertilizersRoutes = require("./backend/routes/fertilizers");
 const buyersRoutes = require("./backend/routes/buyers");
 const dashboardRoutes = require("./backend/routes/dashboard");
+const fertilizer_details_path = path.join(__dirname, 'frontend/html/services/fertilizer-productdetails.html');
+const rent_details_path = path.join(__dirname, 'frontend/html/services/rent-productdetails.html');
 
 const app = express();
 app.use(cors());
@@ -104,14 +106,14 @@ app.get('/rent-items', (req, res) => {
 });
 
 // Route for fertilizer product details
-app.get('/html/services/harvest-details.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/html/services/fertilizer-productdetails.html'));
-});
+app.get('/frontend/html/services/harvest-details.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/html/services/fertilizer-productdetails.html'));
+  });
 
 // Route for rent product details
-app.get('/html/services/product-details.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/html/services/rent-productdetails.html'));
-});
+app.get('/frontend/html/services/product-details.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/html/services/rent-productdetails.html'));
+  });
 
 // Route to get rent cards with additional filtering
 app.get('/getRentCardsByCategory', (req, res) => {
