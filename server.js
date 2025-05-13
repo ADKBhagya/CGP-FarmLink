@@ -14,11 +14,19 @@ const rentItemsRoutes = require("./backend/routes/rentItems");
 const fertilizersRoutes = require("./backend/routes/fertilizers");
 const buyersRoutes = require("./backend/routes/buyers");
 const dashboardRoutes = require("./backend/routes/dashboard");
+const cookieParser = require('cookie-parser');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-    
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: ['http://127.0.0.1:5500', 'http://localhost:5500', 'http://localhost:5000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 // Root Route
 app.get("/", (req, res) => {
   res.send("FarmLink Backend is Running! 🚀");
