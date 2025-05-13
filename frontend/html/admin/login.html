@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmLink Admin Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #e8f5e9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .login-container {
+            background-color: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .header h1 span {
+            color: #0a662e;
+            font-weight: bold;
+        }
+        
+        .form-container {
+            padding: 20px;
+        }
+        
+        .form-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #d32f2f;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .input-field {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .input-field i.icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #0a662e;
+        }
+        
+        .input-field input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+        
+        .input-field input:focus {
+            outline: none;
+            border-color: #0a662e;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #0a662e;
+            cursor: pointer;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: #0a662e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .btn-login:hover {
+            background-color: #085a29;
+        }
+        
+        .bypass-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .bypass-link a {
+            color: #0a662e;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .bypass-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+            <h1>FarmLink <span>Admin</span></h1>
+        </div>
+        
+        <div class="form-container">
+            <h2 class="form-title">Login to Dashboard</h2>
+            
+            <div id="error-message" class="error-message">
+                Invalid username or password
+            </div>
+            
+            <form action="http://localhost:5000/login-action" method="POST">
+                <div class="input-field">
+                    <i class="fas fa-user icon"></i>
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                </div>
+                
+                <div class="input-field">
+                    <i class="fas fa-lock icon"></i>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
+                </div>
+                
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                
+                <button type="submit" class="btn-login">Login</button>
+            </form>
+            
+        </div>
+        
+        <div class="footer">
+            &copy; 2025 FarmLink. All rights reserved.
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                } else {
+                    passwordInput.type = 'password';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                }
+            });
+            
+            // Check for error parameter in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const errorMsg = urlParams.get('error');
+            
+            if (errorMsg) {
+                const errorElement = document.getElementById('error-message');
+                errorElement.textContent = decodeURIComponent(errorMsg);
+                errorElement.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

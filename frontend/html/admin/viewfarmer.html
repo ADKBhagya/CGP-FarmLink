@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Farmer</title>
+    <link rel="stylesheet" href="../../css/admin/style2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+    <nav class="navbar">
+        <ul>
+            <li><a href="/admin">Create Staff</a></li>
+            <li><a href="viewstaff.html">View Staff</a></li>
+            <li><a href="viewfarmer.html" class="active">View Farmer</a></li>
+            <li><a href="viewharvest.html">View Harvest</a></li>
+            <li><a href="viewshop.html">View Shop</a></li>
+            <li><a href="viewbuyer.html">View Buyers</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>View Farmer</h1>
+
+    <div style="display: flex; justify-content: center; margin: 20px 0;">
+        <input type="text" id="farmerSearchInput" placeholder="Enter Farmer ID" style="padding: 8px; width: 250px; border: 1px solid #ddd; border-radius: 4px;">
+        <button onclick="searchFarmer()" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Search</button>
+        <button onclick="resetFarmerSearch()" style="padding: 8px 15px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Reset</button>
+    </div>
+        <button id="downloadPDF" class="pdf-btn">PDF ↓</button>
+
+        <div class="table-container">
+            <table id="farmerTable">
+                <thead>
+                    <tr>
+                        <th>Farmer ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>NIC</th>
+                        <th>Gender</th>
+                        <th>Account Number</th>
+                        <th>Location</th>
+                        <th>Acres</th>
+                        <th>Compost</th>
+                        <th>Harvest</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Farmer data will be loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button class="prev-btn">◀</button>
+            <span id="page-info">Page 1 of 1</span>
+            <button class="next-btn">▶</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this farmer?</p>
+            <div class="modal-buttons">
+                <button id="confirmDelete" class="confirm-btn">Yes</button>
+                <button id="cancelDelete" class="cancel-btn">No</button>
+            </div>
+        </div>
+    </div>
+    <div id="footer-container"></div>
+    
+  
+  <!-- Add this JavaScript at the end of your file -->
+  <script>
+// API Base URL
+const API_BASE_URL = 'http://localhost:5000';
+
+function searchFarmer() {
+  const searchValue = document.getElementById('farmerSearchInput').value.trim();
+  const tableRows = document.querySelectorAll('table tbody tr');
+  
+  tableRows.forEach(row => {
+    const idCell = row.cells[0].textContent.trim();
+    if (searchValue === '' || idCell.includes(searchValue)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+function resetFarmerSearch() {
+  document.getElementById('farmerSearchInput').value = '';
+  const tableRows = document.querySelectorAll('table tbody tr');
+  tableRows.forEach(row => {
+    row.style.display = '';
+  });
+}
+
+// Allow search on Enter key press
+document.getElementById('farmerSearchInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    searchFarmer();
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Variables
+    const tableBody = document.querySelector("#farmerTable tbody");
+    const prevBtn = document.querySelector(".prev-btn");
+    const nextBtn = document.querySelector(".next-btn");
+    const pageInfo = document.getElementById("page-info");
+    const pdfBtn = document.getElementById("downloadPDF");
+
+    let currentPage = 1;
+    const rowsPerPage = 10;
+    let farmerData = [];
+    let deleteRow = null;
+
+    // Fetch farmers data
+    function loadFarmerData() {
+        fetch(`${API_BASE_URL}/get-farmers`, {
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                farmerData = data;
+                displayTable(currentPage);
+                updatePageInfo();
+            })
+            .catch(error => console.error('Error fetching farmer data:', error));
+    }
+
+    // Display farmer table with pagination
+    function displayTable(page) {
+        tableBody.innerHTML = "";
+        let start = (page - 1) * rowsPerPage;
+        let end = start + rowsPerPage;
+        let paginatedData = farmerData.slice(start, end);
+
+        if (paginatedData.length === 0 && page > 1) {
+            currentPage--;
+            displayTable(currentPage);
+            return;
+        }
+
+        paginatedData.forEach(farmer => {
+            let row = document.createElement("tr");
+            row.setAttribute('data-id', farmer.FarmerID);
+            
+            // Format numeric values
+            const acres = farmer.Acres !== null ? farmer.Acres : 0;
+            const compost = farmer.Compost !== null ? parseFloat(farmer.Compost).toFixed(2) : "0.00";
+            const harvest = farmer.Harvest !== null ? parseFloat(farmer.Harvest).toFixed(2) : "0.00";
+            
+            row.innerHTML = `
+                <td>${farmer.FarmerID}</td>
+                <td>${farmer.FirstName || ""}</td>
+                <td>${farmer.LastName || ""}</td>
+                <td>${farmer.Email || ""}</td>
+                <td>${farmer.Contact || ""}</td>
+                <td class="address-cell">${farmer.Address || ""}</td>
+                <td>${farmer.NIC || ""}</td>
+                <td>${farmer.Gender || ""}</td>
+                <td>${farmer.AccNumber || ""}</td>
+                <td>${farmer.Location || ""}</td>
+                <td>${acres}</td>
+                <td>${compost}</td>
+                <td>${harvest}</td>
+                <td>
+                    <button class="edit-btn">Edit</button>
+                    <form action="${API_BASE_URL}/delete-farmer" method="POST">
+                        <input type="hidden" name="farmer_id" value="${farmer.FarmerID}">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+        
+        // Update dashboard farmer count
+        updateDashboardFarmerCount();
+    }
+
+    // Update page info text
+    function updatePageInfo() {
+        const totalPages = Math.ceil(farmerData.length / rowsPerPage) || 1;
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        
+        // Disable/enable pagination buttons
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        
+        // Visual feedback for disabled buttons
+        if (prevBtn.disabled) {
+            prevBtn.classList.add('disabled');
+        } else {
+            prevBtn.classList.remove('disabled');
+        }
+        
+        if (nextBtn.disabled) {
+            nextBtn.classList.add('disabled');
+        } else {
+            nextBtn.classList.remove('disabled');
+        }
+    }
+
+    // Function to update dashboard farmer count
+    function updateDashboardFarmerCount() {
+        fetch(`${API_BASE_URL}/farmer-count`, {
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Farmer count updated in database:", data.count);
+            })
+            .catch(error => console.error('Error updating farmer count:', error));
+    }
+
+    // Pagination event listeners
+    prevBtn.addEventListener("click", function() {
+        if (currentPage > 1) {
+            currentPage--;
+            displayTable(currentPage);
+            updatePageInfo();
+        }
+    });
+
+    nextBtn.addEventListener("click", function() {
+        const totalPages = Math.ceil(farmerData.length / rowsPerPage) || 1;
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayTable(currentPage);
+            updatePageInfo();
+        }
+    });
+
+    // PDF Generation
+    pdfBtn.addEventListener("click", function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'pt', 'a4');
+        
+        // Add title
+        doc.setFontSize(18);
+        doc.text("FarmLink Farmer List", 40, 40);
+        doc.setFontSize(12);
+        doc.text("Generated on: " + new Date().toLocaleDateString(), 40, 60);
+        
+        // Use autotable plugin
+        doc.autoTable({
+            html: '#farmerTable',
+            startY: 70,
+            theme: 'grid',
+            headStyles: { fillColor: [10, 102, 46], textColor: 255 },
+            columnStyles: {
+                13: { cellWidth: 'auto' } // Format the actions column
+            },
+            didDrawPage: function(data) {
+                // Footer
+                doc.setFontSize(10);
+                doc.text("FarmLink - Farmer Management System", 40, doc.internal.pageSize.height - 20);
+                doc.text("Page " + doc.internal.getNumberOfPages(), doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 20);
+            },
+            // Exclude the Actions column
+            columns: [
+                { header: 'Farmer ID', dataKey: 0 },
+                { header: 'First Name', dataKey: 1 },
+                { header: 'Last Name', dataKey: 2 },
+                { header: 'Email', dataKey: 3 },
+                { header: 'Contact', dataKey: 4 },
+                { header: 'Address', dataKey: 5 },
+                { header: 'NIC', dataKey: 6 },
+                { header: 'Gender', dataKey: 7 },
+                { header: 'Account Number', dataKey: 8 },
+                { header: 'Location', dataKey: 9 },
+                { header: 'Acres', dataKey: 10 },
+                { header: 'Compost', dataKey: 11 },
+                { header: 'Harvest', dataKey: 12 }
+            ]
+        });
+        
+        doc.save("FarmLink_Farmer_List.pdf");
+    });
+
+    // Delete Modal Functions
+    function openDeleteModal(row) {
+        deleteRow = row;
+        document.getElementById("deleteModal").style.display = "flex";
+    }
+
+    function closeDeleteModal() {
+        document.getElementById("deleteModal").style.display = "none";
+        deleteRow = null;
+    }
+
+    // Handle table actions (delegated events)
+    tableBody.addEventListener("click", function(event) {
+        // Delete button action
+        if (event.target.classList.contains("delete-btn")) {
+            event.preventDefault();
+            let row = event.target.closest("tr");
+            openDeleteModal(row);
+        }
+        
+        // Edit button action
+        if (event.target.classList.contains("edit-btn")) {
+            event.preventDefault();
+            const row = event.target.closest("tr");
+            
+            // Make row editable
+            makeRowEditable(row);
+            event.target.textContent = "Save";
+            event.target.classList.add("save-btn");
+            event.target.classList.remove("edit-btn");
+        }
+        // Save button action
+        else if (event.target.classList.contains("save-btn")) {
+            event.preventDefault();
+            const row = event.target.closest("tr");
+            const farmerId = row.getAttribute("data-id");
+            
+            // Save changes
+            saveRowChanges(row, farmerId);
+        }
+    });
+
+    // Confirm delete action
+    document.getElementById("confirmDelete").addEventListener("click", function() {
+        if (deleteRow) {
+            const form = deleteRow.querySelector("form");
+            form.submit();
+        }
+        closeDeleteModal();
+    });
+
+    // Cancel delete action
+    document.getElementById("cancelDelete").addEventListener("click", function() {
+        closeDeleteModal();
+    });
+
+    // Close modal when clicking outside
+    document.getElementById("deleteModal").addEventListener("click", function(event) {
+        if (event.target === document.getElementById("deleteModal")) {
+            closeDeleteModal();
+        }
+    });
+
+    // Function to make a row editable
+    function makeRowEditable(row) {
+        const cells = row.querySelectorAll("td:not(:first-child):not(:last-child)");
+        cells.forEach((cell, index) => {
+            const currentValue = cell.textContent.trim();
+            
+            // For gender cell, create a dropdown
+            if (index === 6) { // Gender cell (0-based index after skipping first column)
+                cell.innerHTML = `
+                    <select>
+                        <option value="Male" ${currentValue === "Male" ? 'selected' : ''}>Male</option>
+                        <option value="Female" ${currentValue === "Female" ? 'selected' : ''}>Female</option>
+                        <option value="Other" ${currentValue === "Other" ? 'selected' : ''}>Other</option>
+                    </select>
+                `;
+            } 
+            // For address cell, use textarea
+            else if (cell.classList.contains("address-cell")) {
+                cell.innerHTML = `<textarea rows="2">${currentValue}</textarea>`;
+            }
+            // For numeric fields (Acres, Compost, Harvest)
+            else if (index === 9 || index === 10 || index === 11) {
+                cell.innerHTML = `<input type="number" step="${index === 9 ? '1' : '0.01'}" value="${currentValue}">`;
+            }
+            // For regular cells, use text input
+            else {
+                cell.innerHTML = `<input type="text" value="${currentValue}">`;
+            }
+        });
+    }
+
+    // Function to save changes to a row
+    function saveRowChanges(row, farmerId) {
+        // Log debug info
+        console.log("Saving changes for farmer ID:", farmerId);
+        
+        const firstNameInput = row.querySelector("td:nth-child(2) input");
+        const lastNameInput = row.querySelector("td:nth-child(3) input");
+        const emailInput = row.querySelector("td:nth-child(4) input");
+        const contactInput = row.querySelector("td:nth-child(5) input");
+        const addressTextarea = row.querySelector("td:nth-child(6) textarea");
+        const nicInput = row.querySelector("td:nth-child(7) input");
+        const genderSelect = row.querySelector("td:nth-child(8) select");
+        const accNumberInput = row.querySelector("td:nth-child(9) input");
+        const locationInput = row.querySelector("td:nth-child(10) input");
+        const acresInput = row.querySelector("td:nth-child(11) input");
+        const compostInput = row.querySelector("td:nth-child(12) input");
+        const harvestInput = row.querySelector("td:nth-child(13) input");
+        
+        if (!firstNameInput || !lastNameInput) {
+            console.error("Failed to find input elements");
+            return;
+        }
+        
+        const rowData = {
+            farmer_id: farmerId,
+            first_name: firstNameInput.value,
+            last_name: lastNameInput.value,
+            email: emailInput.value,
+            contact: contactInput.value,
+            address: addressTextarea.value,
+            nic: nicInput.value,
+            gender: genderSelect.value,
+            acc_number: accNumberInput.value,
+            location: locationInput.value,
+            acres: acresInput.value,
+            compost: compostInput.value,
+            harvest: harvestInput.value
+        };
+        
+        console.log("Data to be saved:", rowData);
+        
+        // Send update to server
+        fetch(`${API_BASE_URL}/update-farmer`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(rowData),
+            credentials: 'include'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Change button back to Edit
+                const saveBtn = row.querySelector(".save-btn");
+                if (saveBtn) {
+                    saveBtn.textContent = "Edit";
+                    saveBtn.classList.add("edit-btn");
+                    saveBtn.classList.remove("save-btn");
+                }
+                
+                // Update row with new values
+                const cells = row.querySelectorAll("td:not(:first-child):not(:last-child)");
+                
+                cells[0].textContent = rowData.first_name || "";
+                cells[1].textContent = rowData.last_name || "";
+                cells[2].textContent = rowData.email || "";
+                cells[3].textContent = rowData.contact || "";
+                cells[4].textContent = rowData.address || "";
+                cells[5].textContent = rowData.nic || "";
+                cells[6].textContent = rowData.gender || "";
+                cells[7].textContent = rowData.acc_number || "";
+                cells[8].textContent = rowData.location || "";
+                cells[9].textContent = parseFloat(rowData.acres || 0).toString();
+                cells[10].textContent = parseFloat(rowData.compost || 0).toFixed(2);
+                cells[11].textContent = parseFloat(rowData.harvest || 0).toFixed(2);
+                
+                // Show success message
+                alert("Farmer updated successfully!");
+            } else {
+                // Show error message
+                alert("Error updating farmer: " + (data.error || "Unknown error"));
+                // Reload data to reset the form
+                loadFarmerData();
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Error updating farmer: " + error.message);
+            loadFarmerData();
+        });
+    }
+    
+    // Initialize
+    loadFarmerData();
+});
+</script>
+</body>
+</html>

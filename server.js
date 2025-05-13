@@ -1224,6 +1224,612 @@ app.use((err, req, res, next) => {
 //HARVEST SECTION CODES END
 
 
+//ADMIN CODES START
+
+const activeUsers = {};
+
+// ======== LOGIN ROUTES ========
+
+// Serve login page
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/login.html'));
+});
+
+// Process login with database validation
+app.post('/login-action', (req, res) => {
+  console.log('Login attempt:', req.body);
+  const { username, password } = req.body;
+
+  // Query the database for the user
+  const query = 'SELECT * FROM admin WHERE username = ?';
+
+  db.query(query, [username], (err, results) => {
+    if (err) {
+      console.error('Database error during login:', err);
+      // Failed login
+      return res.redirect('http://localhost:5000/login?error=Invalid+username+or+password');
+    }
+
+    // Check if user exists and password matches
+    if (results.length > 0 && results[0].password === password) {
+      // Create a simple auth token
+      const token = Date.now().toString();
+      activeUsers[token] = {
+        username,
+        admin_id: results[0].admin_id,
+        first_name: results[0].first_name,
+        last_name: results[0].last_name
+      };
+
+      // Set token cookie with appropriate settings for cross-origin
+      res.cookie('auth_token', token, {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: false,
+        sameSite: 'Lax',
+        secure: false
+      });
+
+      // Redirect to admin page with the Live Server URL
+      return res.redirect('http://localhost:5000/admin');
+    }
+
+    // Failed login
+    return res.redirect('http://localhost:5000/login?error=Invalid+username+or+password');
+  });
+});
+// Direct login (development only)
+app.get('/quick-login', (req, res) => {
+  const token = Date.now().toString();
+  activeUsers[token] = { username: 'admin' };
+  res.cookie('auth_token', token, {
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'None',
+    secure: true
+  });
+  res.redirect('http://localhost:5000/admin');
+});
+
+// Simple auth check function
+function isAuthenticated(req) {
+  const token = req.cookies?.auth_token;
+  return token && activeUsers[token];
+}
+
+// Logout
+app.get('/logout', (req, res) => {
+  const token = req.cookies?.auth_token;
+  if (token) {
+    delete activeUsers[token];
+    res.clearCookie('auth_token');
+  }
+  res.redirect('http://localhost:5000/login');
+});
+
+// ======== MAIN ROUTES ========
+
+// Serve the dashboard page (root)
+app.get('/admin', (req, res) => {
+  // Simple direct serving
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/admin.html'));
+});
+
+// Route for View Staff page
+app.get('/view-staff', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewstaff.html'));
+});
+
+app.get('/viewstaff.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewstaff.html'));
+});
+
+// Route for View Farmer page
+app.get('/view-farmer', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewfarmer.html'));
+});
+
+app.get('/viewfarmer.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewfarmer.html'));
+});
+
+// Route for View Harvest page
+app.get('/view-harvest', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewharvest.html'));
+});
+
+app.get('/viewharvest.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewharvest.html'));
+});
+
+// Route for View Shop page
+app.get('/view-shop', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewshop.html'));
+});
+
+app.get('/viewshop.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewshop.html'));
+});
+
+// Route for View Buyers page
+app.get('/view-buyers', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewbuyer.html'));
+});
+
+app.get('/viewbuyer.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/html/admin/viewbuyer.html'));
+});
+
+// ======== API ROUTES ========
+
+// Route to handle form submission
+app.post('/create-staff', (req, res) => {
+  console.log(req.body);
+  const { first_name, last_name, contact_number, position, gender, date_of_joining, nic, email, username, password } = req.body;
+
+  const query = `INSERT INTO staff (first_name, last_name, contact_number, position, gender, joined_date, nic, email, username, password)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  db.query(query, [first_name, last_name, contact_number, position, gender, date_of_joining, nic, email, username, password], (err, result) => {
+    if (err) {
+      console.error("Error occurred:", err);
+      return res.status(500).send("Server error");
+    }
+    res.redirect('/viewstaff');
+  });
+});
+
+// Route to view all staff
+app.get('/viewstaff', (req, res) => {
+  db.query('SELECT * FROM staff', (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Server error');
+    }
+    res.sendFile(path.join(__dirname, 'frontend/html/admin/viewstaff.html'));
+  });
+});
+
+// Add a separate API endpoint to get staff data
+app.get('/api/staff', (req, res) => {
+  db.query('SELECT * FROM staff', (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Server error');
+    }
+    res.json(results);
+  });
+});
+
+// Route to delete staff
+app.post('/delete-staff', (req, res) => {
+  const { staff_id } = req.body;
+
+  db.query('DELETE FROM staff WHERE staff_id = ?', [staff_id], (err, result) => {
+    if (err) {
+      console.error("Error deleting staff:", err);
+      return res.status(500).send("Server error");
+    }
+    res.redirect('/viewstaff');
+  });
+});
+
+app.get('/get-staff', (req, res) => {
+  db.query('SELECT * FROM staff', (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Server error');
+    }
+    res.json(results);
+  });
+});
+
+// Route to update staff information
+app.post('/update-staff', (req, res) => {
+  console.log("Update staff request received:", req.body);
+  const {
+    staff_id,
+    first_name,
+    last_name,
+    contact_number,
+    position,
+    gender,
+    joined_date,
+    nic,
+    email,
+    username,
+    password
+  } = req.body;
+
+  // Format the date to MySQL format (YYYY-MM-DD)
+  let formattedDate = joined_date;
+  if (joined_date && joined_date.includes('-')) {
+    formattedDate = joined_date; // Already in YYYY-MM-DD format
+  } else if (joined_date) {
+    // Try to parse as date object
+    const dateObj = new Date(joined_date);
+    if (!isNaN(dateObj.getTime())) {
+      formattedDate = dateObj.toISOString().split('T')[0];
+    }
+  }
+
+  // Ensure empty strings are converted to valid values
+  const cleanPosition = position === "undefined" || !position ? "" : position;
+  const cleanNic = nic === "undefined" || !nic ? "" : nic;
+  const cleanPassword = password === "undefined" || !password ? "" : password;
+
+  const query = `UPDATE staff 
+                   SET first_name = ?, last_name = ?, contact_number = ?, 
+                       position = ?, gender = ?, joined_date = ?, 
+                       nic = ?, email = ?, username = ?, password = ? 
+                   WHERE staff_id = ?`;
+
+  db.query(
+    query,
+    [
+      first_name,
+      last_name,
+      contact_number,
+      cleanPosition,
+      gender,
+      formattedDate,
+      cleanNic,
+      email,
+      username,
+      cleanPassword,
+      staff_id
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating staff:", err);
+        return res.status(500).json({ error: "Server error", details: err.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Staff not found" });
+      }
+
+      console.log("Staff updated successfully, affected rows:", result.affectedRows);
+      res.json({ success: true, message: "Staff updated successfully" });
+    }
+  );
+});
+
+// Route to get staff count for the dashboard
+app.get('/staff-count', (req, res) => {
+  db.query('SELECT COUNT(*) as count FROM staff', (err, result) => {
+    if (err) {
+      console.error("Error getting staff count:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+
+    // Return the count as JSON
+    res.json({ count: result[0].count });
+  });
+});
+
+// Get farmer count
+app.get('/farmer-count', (req, res) => {
+  db.query('SELECT COUNT(*) as count FROM Farmer', (err, result) => {
+    if (err) {
+      console.error("Error getting farmer count:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+    res.json({ count: result[0].count });
+  });
+});
+
+// Get buyer count
+app.get('/buyer-count', (req, res) => {
+  db.query('SELECT COUNT(*) as count FROM buyer', (err, result) => {
+    if (err) {
+      console.error("Error getting buyer count:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+    res.json({ count: result[0].count });
+  });
+});
+
+// Get harvest count
+app.get('/harvest-count', (req, res) => {
+  db.query('SELECT COUNT(*) as count FROM Harvest', (err, result) => {
+    if (err) {
+      console.error("Error getting harvest count:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+    res.json({ count: result[0].count });
+  });
+});
+
+// Get all farmers
+app.get('/get-farmers', (req, res) => {
+  db.query('SELECT * FROM Farmer', (err, results) => {
+    if (err) {
+      console.error("Error fetching farmers:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+    res.json(results);
+  });
+});
+
+// Get all buyers
+app.get('/get-buyers', (req, res) => {
+  db.query('SELECT * FROM buyer', (err, results) => {
+    if (err) {
+      console.error("Error fetching buyers:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+    res.json(results);
+  });
+});
+
+// Get Fertilizers
+// Get Fertilizers
+app.get('/getFertilizers', (req, res) => {
+  const query = 'SELECT * FROM fertilizer ORDER BY fertilizer_id DESC';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error fetching fertilizers:', err);
+      return res.status(500).json({ error: 'Error fetching fertilizers' });
+    }
+
+    // Process the results to handle BLOB images
+    const processedResults = result.map(fertilizer => {
+      const processedFertilizer = { ...fertilizer };
+
+      // If image is a Buffer (BLOB data), convert it to base64
+      if (processedFertilizer.image && Buffer.isBuffer(processedFertilizer.image)) {
+        processedFertilizer.image = `data:image/jpeg;base64,${processedFertilizer.image.toString('base64')}`;
+      }
+
+      return processedFertilizer;
+    });
+
+    res.json(processedResults);
+  });
+});
+
+// Get Rent Cards
+app.get('/get-harvests', (req, res) => {
+  console.log('Get harvests request received');
+  console.log('Cookies:', req.cookies);
+  
+  const query = 'SELECT HarvestID, FarmerID, ContactNo, TotalHarvest, UnitPrice FROM Harvest';
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching harvests:', err);
+      return res.status(500).json({ error: 'Server error' });
+    }
+    
+    console.log('Query results:', results);
+    
+    // Map the results
+    const mappedResults = results.map(row => ({
+      harvest_id: row.HarvestID,
+      farmer_id: row.FarmerID,
+      contact_number: row.ContactNo,
+      total_harvest: row.TotalHarvest,
+      unit_price: row.UnitPrice
+    }));
+    
+    console.log('Mapped results:', mappedResults);
+    res.json(mappedResults);
+  });
+});
+
+// Add the update-harvest route
+app.post('/update-harvest', (req, res) => {
+  const { harvest_id, farmer_id, contact_number, total_harvest, unit_price } = req.body;
+
+  const query = `UPDATE Harvest 
+                   SET FarmerID = ?, ContactNo = ?, TotalHarvest = ?, UnitPrice = ?
+                   WHERE HarvestID = ?`;
+
+  db.query(query, [farmer_id, contact_number, total_harvest, unit_price, harvest_id], (err, result) => {
+    if (err) {
+      console.error('Error updating harvest:', err);
+      return res.status(500).json({ error: 'Server error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Harvest not found' });
+    }
+
+    res.json({ success: true, message: 'Harvest updated successfully' });
+  });
+});
+
+// Add the delete-harvest route
+app.post('/delete-harvest', (req, res) => {
+  const { harvest_id } = req.body;
+
+  const query = 'DELETE FROM Harvest WHERE HarvestID = ?';
+
+  db.query(query, [harvest_id], (err, result) => {
+    if (err) {
+      console.error('Error deleting harvest:', err);
+      return res.status(500).json({ error: 'Server error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Harvest not found' });
+    }
+
+    res.redirect('http://localhost:5000/viewharvest.html');
+  });
+});
+
+
+// Route to update farmer information
+app.post('/update-farmer', (req, res) => {
+  console.log("Update farmer request received:", req.body);
+  const {
+    farmer_id,
+    first_name,
+    last_name,
+    email,
+    contact,
+    address,
+    nic,
+    gender,
+    acc_number,
+    location,
+    acres,
+    compost,
+    harvest
+  } = req.body;
+
+  const query = `UPDATE Farmer 
+                   SET FirstName = ?, LastName = ?, Email = ?, Contact = ?, 
+                       Address = ?, NIC = ?, Gender = ?, AccNumber = ?, 
+                       Location = ?, Acres = ?, Compost = ?, Harvest = ? 
+                   WHERE FarmerID = ?`;
+
+  db.query(
+    query,
+    [
+      first_name,
+      last_name,
+      email,
+      contact,
+      address,
+      nic,
+      gender,
+      acc_number,
+      location,
+      acres,
+      compost,
+      harvest,
+      farmer_id
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating farmer:", err);
+        return res.status(500).json({ error: "Server error", details: err.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Farmer not found" });
+      }
+
+      console.log("Farmer updated successfully, affected rows:", result.affectedRows);
+      res.json({ success: true, message: "Farmer updated successfully" });
+    }
+  );
+});
+
+// Route to delete farmer
+app.post('/delete-farmer', (req, res) => {
+  const { farmer_id } = req.body;
+
+  db.query('DELETE FROM Farmer WHERE FarmerID = ?', [farmer_id], (err, result) => {
+    if (err) {
+      console.error("Error deleting farmer:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Farmer not found" });
+    }
+
+    res.redirect('http://localhost:5000/viewfarmer.html');
+  });
+});
+
+// Get Rent Cards
+app.get('/getRentCards', (req, res) => {
+  const query = 'SELECT * FROM rent_cards ORDER BY card_id DESC';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error fetching rent cards:', err);
+      return res.status(500).json({ error: 'Error fetching rent cards' });
+    }
+
+    // Process the results to handle BLOB images
+    const processedResults = result.map(card => {
+      const processedCard = { ...card };
+
+      // If image is a Buffer (BLOB data), convert it to base64
+      if (processedCard.image && Buffer.isBuffer(processedCard.image)) {
+        processedCard.image = `data:image/jpeg;base64,${processedCard.image.toString('base64')}`;
+      }
+
+      return processedCard;
+    });
+
+    res.json(processedResults);
+  });
+});
+
+
+// Route to update buyer information
+app.post('/update-buyer', (req, res) => {
+  console.log("Update buyer request received:", req.body);
+  const {
+    buyer_id,
+    buyer_name,
+    address,
+    email,
+    contact_number,
+    nic,
+    username,
+    password
+  } = req.body;
+
+  const query = `UPDATE buyer 
+                   SET buyer_name = ?, address = ?, email = ?, 
+                       contact_number = ?, NIC = ?, username = ?, 
+                       PASSWORD = ? 
+                   WHERE buyer_id = ?`;
+
+  db.query(
+    query,
+    [
+      buyer_name,
+      address,
+      email,
+      contact_number,
+      nic,
+      username,
+      password,
+      buyer_id
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating buyer:", err);
+        return res.status(500).json({ error: "Server error", details: err.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Buyer not found" });
+      }
+
+      console.log("Buyer updated successfully, affected rows:", result.affectedRows);
+      res.json({ success: true, message: "Buyer updated successfully" });
+    }
+  );
+});
+
+// Route to delete buyer
+app.post('/delete-buyer', (req, res) => {
+  const { buyer_id } = req.body;
+
+  db.query('DELETE FROM buyer WHERE buyer_id = ?', [buyer_id], (err, result) => {
+    if (err) {
+      console.error("Error deleting buyer:", err);
+      return res.status(500).json({ error: "Server error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Buyer not found" });
+    }
+
+    res.redirect('http://localhost:5000/viewbuyer.html');
+  });
+});
+
+
+//ADMIN CODES END
+
 
 
 

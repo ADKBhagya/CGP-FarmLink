@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="../../css/admin/admin.css">
+  <script src="../../js/admin/admin.js" defer></script>
+</head>
+
+<body>
+
+  <div id="navbar-container"></div>
+
+  <!-- Dashboard Header -->
+  <section class="dashboard-header">
+    <div class="header-image">
+      <img src="../../assets/admin/Group455.png" alt="Group Image">
+    </div>
+  </section>
+
+  <!-- Dashboard Stats -->
+  <section class="dashboard-stats">
+    <div class="stats-card" id="weatherCard">
+      <!-- Weather info will be dynamically injected here -->
+    </div>
+    <div class="stats-card" id="staffCountCard">
+      <p>Number of Staff</p>
+      <h2>0000</h2>
+    </div>
+    <div class="stats-card">
+      <p>Number of Farmers</p>
+      <h2>01110</h2>
+    </div>
+    <div class="stats-card">
+      <p>Total Harvest</p>
+      <h2>45000kg</h2>
+    </div>
+    <div class="stats-card">
+      <p>Active Buyers</p>
+      <h2>0134</h2>
+    </div>
+  </section>
+
+  <!-- Navigation Links -->
+  <section class="dashboard-nav">
+    <a href="admin.html"><button class="active">Create Staff</button></a>
+    <a href="viewstaff.html"><button>View Staff</button></a>
+    <a href="viewfarmer.html"><button>View Farmer</button></a>
+    <a href="viewharvest.html"><button>View Harvest</button></a>
+    <a href="viewshop.html"><button>View Shop</button></a>
+    <a href="viewbuyer.html"><button>View Buyers</button></a>
+  </section>
+
+  <!-- Create Staff Form -->
+
+  <section class="create-staff">
+    <h2>Create Staff</h2>
+    <form action="http://localhost:5000/create-staff" method="POST">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" name="first_name" placeholder="First Name" required>
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" name="last_name" placeholder="Last Name" required>
+      </div>
+      <div class="form-group">
+        <label>Contact Number</label>
+        <input type="text" name="contact_number" placeholder="77 234 456 45" required>
+      </div>
+      <div class="form-group">
+        <label>Position</label>
+        <input type="text" name="position" placeholder="Manager" required>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select name="gender" required>
+          <option>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date of Joining</label>
+        <input type="date" name="date_of_joining" required>
+      </div>
+      <div class="form-group">
+        <label>NIC</label>
+        <input type="text" name="nic" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="name@email.com" required>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="register">Register</button>
+      </div>
+    </form>
+  </section>
+
+
+  <div id="footer-container"></div>
+
+  <!-- Script to update Staff Count dynamically -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fetch the staff count
+      fetch('/staff-count')
+        .then(response => response.json())
+        .then(data => {
+          // Format the count to always have 4 digits with leading zeros
+          const formattedCount = data.count.toString().padStart(4, '0');
+
+          // Find the stats card that displays staff count and update it
+          const staffCountElement = document.querySelector('#staffCountCard h2');
+          if (staffCountElement) {
+            staffCountElement.textContent = formattedCount;
+          }
+        })
+        .catch(error => console.error('Error fetching staff count:', error));
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fetch the farmer count
+      fetch('/farmer-count')
+        .then(response => response.json())
+        .then(data => {
+          // Format the count to always have 4 digits with leading zeros
+          const formattedCount = data.count.toString().padStart(4, '0');
+
+          // Find the stats card that displays farmer count and update it
+          const farmerCountElement = document.querySelector('.stats-card:nth-of-type(3) h2');
+          if (farmerCountElement) {
+            farmerCountElement.textContent = formattedCount;
+          }
+        })
+        .catch(error => console.error('Error fetching farmer count:', error));
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Fetch the buyer count
+        fetch('/buyer-count')
+            .then(response => response.json())
+            .then(data => {
+                // Format the count to always have 4 digits with leading zeros
+                const formattedCount = data.count.toString().padStart(4, '0');
+                
+                // Find the stats card that displays buyer count and update it
+                const buyerCountElement = document.querySelector('.stats-card:nth-of-type(5) h2');
+                if (buyerCountElement) {
+                    buyerCountElement.textContent = formattedCount;
+                }
+            })
+            .catch(error => console.error('Error fetching buyer count:', error));
+    });
+  </script>
+
+</body>
+
+</html>
