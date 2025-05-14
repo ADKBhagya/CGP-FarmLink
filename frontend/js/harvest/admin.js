@@ -18,6 +18,9 @@ let currentProductData = null;
 let allProducts = [];
 let cartItems = [];
 
+// Check if we're in farmer view
+const isFarmerView = document.body.classList.contains('farmer-view');
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     fetchProducts();
@@ -172,17 +175,32 @@ function displayProducts(products) {
         
         let imageUrl = product.image || '../../assets/default-image.jpg';
         
+        // Check if we're in farmer view to show edit/delete buttons instead of add to cart
+        let buttonHTML = '';
+        if (document.body.classList.contains('farmer-view')) {
+            buttonHTML = `
+                <div class="product-buttons">
+                    <button class="edit-product" data-id="${product.card_id}">Edit</button>
+                    <button class="delete-product" data-id="${product.card_id}">Delete</button>
+                </div>
+            `;
+        } else {
+            buttonHTML = `
+                <div class="product-buttons">
+                    <button class="add-to-cart" data-id="${product.card_id}">Add to Cart</button>
+                </div>
+            `;
+        }
+        
         productCard.innerHTML = `
             <img src="${imageUrl}" alt="${product.name}">
             <h3>${product.name}</h3>
             <p class="price">Rs ${product.price}</p>
             <p class="category">${product.category}</p>
-            <div class="product-buttons">
-                <button class="add-to-cart" data-id="${product.card_id}">Add to Cart</button>
-            </div>
+            ${buttonHTML}
         `;
         
-        // Add click event listener to the card itself
+        // Add click event listener to the card itself for product details page
         productCard.style.cursor = 'pointer';
         productCard.addEventListener('click', function(e) {
             // Don't navigate if clicking on the button
@@ -199,20 +217,31 @@ function displayProducts(products) {
 }
 
 function attachCardEventListeners() {
-    // Event delegation for add to cart buttons
+    // Event delegation for all product card buttons
     const productGrid = document.getElementById('productGrid');
     if (productGrid) {
         productGrid.addEventListener('click', function(event) {
+            const productId = event.target.getAttribute('data-id');
+            
+            if (!productId) return;
+            
             if (event.target.classList.contains('add-to-cart')) {
                 event.stopPropagation(); // Prevent card click
-                const productId = event.target.getAttribute('data-id');
                 addToCart(productId);
+            }
+            else if (event.target.classList.contains('edit-product')) {
+                event.stopPropagation(); // Prevent card click
+                openModal(productId);
+            }
+            else if (event.target.classList.contains('delete-product')) {
+                event.stopPropagation(); // Prevent card click
+                if (confirm('Are you sure you want to delete this product?')) {
+                    deleteProduct(productId);
+                }
             }
         });
     }
 }
-
-
 
 // Delete Product
 async function deleteProduct(productId) {
@@ -441,9 +470,35 @@ async function handleFormSubmit(event) {
 
 // Cart Functions (Stub functions since cart functionality not fully implemented)
 function loadCartFromStorage() {
-    // Implementation not shown in original code
+    const storedCart = localStorage.getItem('farmlink-cart');
+    if (storedCart) {
+        try {
+            cartItems = JSON.parse(storedCart);
+        } catch (e) {
+            console.error('Error parsing cart from storage:', e);
+            cartItems = [];
+        }
+    }
 }
 
 function updateCartCount() {
-    // Implementation not shown in original code
+    if (cartCount) {
+        cartCount.textContent = cartItems.length || '0';
+    }
+}
+
+function addToCart(productId) {
+    const product = allProducts.find(p => p.card_id === productId);
+    if (!product) return;
+    
+    cartItems.push({
+        id: product.card_id,
+        name: product.name,
+        price: product.price,
+        quantity: 1
+    });
+    
+    localStorage.setItem('farmlink-cart', JSON.stringify(cartItems));
+    updateCartCount();
+    alert('Product added to cart!');
 }
